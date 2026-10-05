@@ -21,7 +21,7 @@ label{font-size:12px;font-weight:700;display:block;margin-bottom:4px}
 .player.selected{border-color:#17212b;background:#eef2f5}.player.libero{border-color:#c58a00;background:#fff7d6}
 .player .num{font-size:20px;font-weight:800}.player .name{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .player .tools{display:flex;justify-content:center;gap:3px;margin-top:4px}.player .tools button{padding:2px 5px;font-size:11px;background:#dfe5e9;color:#17212b}
-.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.actions button{min-height:46px}
+.action-box{border:1px solid #d7dde2;border-radius:12px;padding:10px;margin:8px 0;background:#fafbfc}.action-box h3{font-size:13px;margin:0 0 7px;color:#33404c}.action-box .actions{margin:0}.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.actions.two{grid-template-columns:1fr 1fr}.actions button{min-height:46px}
 .feedback{margin-top:8px;padding:9px;border-radius:9px;background:#edf6ee;font-weight:700;min-height:38px}
 table{width:100%;border-collapse:collapse;font-size:11px}th,td{border:1px solid #d8dde2;padding:5px;text-align:center}th{background:#eef2f5}td.left,th.left{text-align:left}
 .table-wrap{overflow:auto}.muted{color:#68737e;font-size:12px}
@@ -93,35 +93,65 @@ table{width:100%;border-collapse:collapse;font-size:11px}th,td{border:1px solid 
 
 <section class="card">
 <h2>5. Ações</h2>
-<div class="actions">
-<button onclick="service('RA')">Serviço RA</button>
-<button onclick="service('RB')">Serviço RB</button>
-<button onclick="service('RC')">Serviço RC</button>
-<button class="green" onclick="service('R0')">Serviço Ponto</button>
-<button class="danger" onclick="serviceError()">Serviço Erro</button>
 
-<button onclick="reception('A')">Receção A</button>
-<button onclick="reception('B')">Receção B</button>
-<button onclick="reception('C')">Receção C</button>
-<button class="danger" onclick="reception('R0')">Receção Erro</button>
-
-<button class="green" onclick="attack('Ponto')">Ataque Ponto</button>
-<button onclick="attack('Continuação')">Ataque Continuação</button>
-<button class="danger" onclick="attack('Erro')">Ataque Erro</button>
-<button class="green" onclick="opponentPointAttack()">Ponto Ataque Adversário</button>
-
-<button class="green" onclick="block('Ponto')">Bloco Ponto</button>
-<button onclick="block('Continuação')">Bloco Continuação</button>
-<button class="danger" onclick="block('Erro')">Bloco Erro</button>
-
-<button onclick="defense('+')">Defesa +</button>
-<button class="danger" onclick="defense('-')">Defesa −</button>
-
-<button class="danger" onclick="special('Falta Oeiras', 'opp')">Falta Oeiras</button>
-<button class="green" onclick="special('Falta Adversário', 'us')">Falta Adversário</button>
-<button class="danger" onclick="special('Falta no passe — erro', 'opp')">Falta no passe — erro</button>
-<button class="green" onclick="special('Erro deles', 'us')">Erro deles</button>
+<div class="action-box">
+  <h3>🏐 SERVIÇO</h3>
+  <div class="actions">
+    <button onclick="service('RA')">RA</button>
+    <button onclick="service('RB')">RB</button>
+    <button onclick="service('RC')">RC</button>
+    <button class="green" onclick="service('R0')">Ponto</button>
+    <button class="danger" onclick="serviceError()">Erro</button>
+  </div>
 </div>
+
+<div class="action-box">
+  <h3>👐 RECEÇÃO</h3>
+  <div class="actions">
+    <button onclick="reception('A')">A</button>
+    <button onclick="reception('B')">B</button>
+    <button onclick="reception('C')">C</button>
+    <button class="danger" onclick="reception('R0')">Erro</button>
+  </div>
+</div>
+
+<div class="action-box">
+  <h3>⚡ ATAQUE</h3>
+  <div class="actions">
+    <button class="green" onclick="attack('Ponto')">Ponto</button>
+    <button onclick="attack('Continuação')">Continuação</button>
+    <button class="danger" onclick="attack('Erro')">Erro</button>
+    <button class="green" onclick="opponentPointAttack()">Ponto Adversário</button>
+  </div>
+</div>
+
+<div class="action-box">
+  <h3>🧱 BLOCO</h3>
+  <div class="actions">
+    <button class="green" onclick="block('Ponto')">Ponto</button>
+    <button onclick="block('Continuação')">Continuação</button>
+    <button class="danger" onclick="block('Erro')">Erro</button>
+  </div>
+</div>
+
+<div class="action-box">
+  <h3>🛡️ DEFESA</h3>
+  <div class="actions two">
+    <button onclick="defense('+')">+</button>
+    <button class="danger" onclick="defense('-')">−</button>
+  </div>
+</div>
+
+<div class="action-box">
+  <h3>⚠️ FALTAS</h3>
+  <div class="actions">
+    <button class="danger" onclick="special('Falta Oeiras', 'opp')">Falta Oeiras</button>
+    <button class="green" onclick="special('Falta Adversário', 'us')">Falta Adversário</button>
+    <button class="danger" onclick="special('Falta no passe — erro', 'opp')">Falta no passe</button>
+    <button class="green" onclick="special('Erro deles', 'us')">Erro deles</button>
+  </div>
+</div>
+
 <div id="feedback" class="feedback">Selecione um atleta para começar.</div>
 </section>
 
