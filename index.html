@@ -1,609 +1,1262 @@
 <!DOCTYPE html>
-
 <html lang="pt-PT">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Estatística de Voleibol</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    * {
-      box-sizing: border-box;
+<title>Voleibol Oeiras</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+    background:#f5f5f5;
+    color:#111;
+}
+
+header{
+    background:#111;
+    color:white;
+    padding:18px 15px;
+    text-align:center;
+    border-bottom:5px solid #d71920;
+}
+
+header h1{
+    margin:0;
+    font-size:22px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:12px;
+}
+
+.card{
+    background:white;
+    border-radius:16px;
+    padding:16px;
+    margin-bottom:14px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+h2{
+    margin-top:0;
+    font-size:20px;
+}
+
+input,select{
+    width:100%;
+    padding:14px;
+    margin:5px 0 10px;
+    border:1px solid #ccc;
+    border-radius:10px;
+    font-size:17px;
+    background:white;
+}
+
+button{
+    border:0;
+    border-radius:12px;
+    padding:15px;
+    font-size:17px;
+    font-weight:700;
+    cursor:pointer;
+    min-height:52px;
+}
+
+.red{
+    background:#d71920;
+    color:white;
+}
+
+.black{
+    background:#111;
+    color:white;
+}
+
+.light{
+    background:#eeeeee;
+    color:#111;
+}
+
+.outline{
+    background:white;
+    color:#111;
+    border:2px solid #ddd;
+}
+
+.small{
+    font-size:14px;
+    padding:10px;
+    min-height:42px;
+}
+
+.hidden{
+    display:none;
+}
+
+/* RESULTADO */
+
+.score{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    text-align:center;
+    gap:8px;
+}
+
+.team{
+    width:42%;
+}
+
+.team-name{
+    font-size:16px;
+    font-weight:700;
+    min-height:40px;
+}
+
+.score-number{
+    font-size:60px;
+    font-weight:800;
+    line-height:1;
+    margin:8px 0 14px;
+}
+
+.set-label{
+    font-weight:700;
+    font-size:16px;
+}
+
+/* JOGADORAS */
+
+.players{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+}
+
+.player{
+    background:#f2f2f2;
+    border:2px solid transparent;
+    border-radius:12px;
+    padding:13px 8px;
+    text-align:center;
+    font-weight:700;
+}
+
+.player.selected{
+    background:#fff0f0;
+    border-color:#d71920;
+    color:#b00008;
+}
+
+/* SERVE / RECEBE */
+
+.role-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.role{
+    background:#f3f3f3;
+    padding:14px;
+    border-radius:12px;
+    text-align:center;
+}
+
+.role strong{
+    display:block;
+    margin-top:5px;
+    font-size:17px;
+}
+
+/* AÇÕES */
+
+.actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+
+.actions button{
+    min-height:62px;
+}
+
+.action-positive{
+    background:#111;
+    color:white;
+}
+
+.action-negative{
+    background:#d71920;
+    color:white;
+}
+
+/* ESTATÍSTICAS */
+
+.table-wrap{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:14px;
+}
+
+th{
+    background:#111;
+    color:white;
+    padding:9px 5px;
+    white-space:nowrap;
+}
+
+td{
+    padding:9px 5px;
+    border-bottom:1px solid #ddd;
+    text-align:center;
+    white-space:nowrap;
+}
+
+td:first-child{
+    text-align:left;
+    font-weight:700;
+}
+
+/* REGISTO */
+
+.log{
+    max-height:250px;
+    overflow-y:auto;
+}
+
+.log-item{
+    padding:9px 4px;
+    border-bottom:1px solid #eee;
+    font-size:14px;
+}
+
+.empty{
+    color:#777;
+    text-align:center;
+    padding:15px;
+}
+
+/* SETS */
+
+.sets{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.set-result{
+    background:#f3f3f3;
+    padding:12px;
+    border-radius:10px;
+    font-weight:700;
+}
+
+/* RODAPÉ */
+
+footer{
+    text-align:center;
+    color:#777;
+    font-size:12px;
+    padding:20px;
+}
+
+@media(min-width:600px){
+
+    .players{
+        grid-template-columns:repeat(4,1fr);
     }
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      color: #17202a;
+    .actions{
+        grid-template-columns:repeat(3,1fr);
     }
 
-    header {
-      background: #17202a;
-      color: white;
-      padding: 16px;
-      text-align: center;
-    }
+}
 
-    header h1 {
-      margin: 0;
-      font-size: 22px;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 15px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 15px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-
-    input, select {
-      width: 100%;
-      padding: 12px;
-      margin: 6px 0;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-
-    button {
-      border: 0;
-      border-radius: 10px;
-      padding: 14px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      margin: 4px;
-    }
-
-    .primary {
-      background: #1769aa;
-      color: white;
-    }
-
-    .success {
-      background: #2e8b57;
-      color: white;
-    }
-
-    .danger {
-      background: #c0392b;
-      color: white;
-    }
-
-    .secondary {
-      background: #e0e0e0;
-    }
-
-    .score {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      text-align: center;
-      margin: 15px 0;
-    }
-
-    .score-team {
-      width: 40%;
-    }
-
-    .score-number {
-      font-size: 55px;
-      font-weight: bold;
-    }
-
-    .vs {
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    .buttons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .buttons button {
-      margin: 0;
-      min-height: 58px;
-    }
-
-    .players {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-    }
-
-    .player {
-      padding: 12px;
-      border: 2px solid #ddd;
-      border-radius: 10px;
-      background: white;
-      cursor: pointer;
-    }
-
-    .player.active {
-      border-color: #1769aa;
-      background: #eaf4ff;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .stat-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-
-    .stat-table th,
-    .stat-table td {
-      padding: 8px;
-      border-bottom: 1px solid #ddd;
-      text-align: center;
-    }
-
-    .stat-table th {
-      background: #17202a;
-      color: white;
-    }
-
-    .log {
-      max-height: 250px;
-      overflow-y: auto;
-      font-size: 14px;
-    }
-
-    .log div {
-      padding: 8px;
-      border-bottom: 1px solid #eee;
-    }
-
-    @media (min-width: 700px) {
-      .buttons {
-        grid-template-columns: repeat(3, 1fr);
-      }
-
-      .players {
-        grid-template-columns: repeat(4, 1fr);
-      }
-    }
-  </style>
-
+</style>
 </head>
 
 <body>
 
 <header>
-  <h1>🏐 Estatística de Voleibol</h1>
+    <h1>🏐 VOLEIBOL OEIRAS</h1>
 </header>
 
 <div class="container">
 
-  <div class="card" id="setup">
+<!-- CONFIGURAÇÃO -->
 
-```
-<h2>Novo jogo</h2>
+<div id="setup">
 
-<input id="teamName" placeholder="Nome da equipa">
+    <div class="card">
 
-<input id="opponentName" placeholder="Adversário">
+        <h2>Novo jogo</h2>
 
-<button class="primary" onclick="startGame()">
-  Começar jogo
-</button>
-```
+        <input id="teamName"
+               placeholder="Nome da equipa"
+               value="Oeiras">
 
-  </div>
+        <input id="opponentName"
+               placeholder="Adversário">
 
-  <div id="game" class="hidden">
+        <button class="red"
+                style="width:100%"
+                onclick="startGame()">
+            COMEÇAR JOGO
+        </button>
 
-```
-<div class="card">
-
-  <h2 id="gameTitle"></h2>
-
-  <div class="score">
-
-    <div class="score-team">
-      <div id="teamDisplay">Equipa</div>
-      <div class="score-number" id="scoreA">0</div>
-      <button class="success" onclick="addPoint('A')">
-        + Ponto
-      </button>
     </div>
 
-    <div class="vs">SET <span id="setNumber">1</span></div>
+    <div class="card">
 
-    <div class="score-team">
-      <div id="opponentDisplay">Adversário</div>
-      <div class="score-number" id="scoreB">0</div>
-      <button class="danger" onclick="addPoint('B')">
-        + Ponto
-      </button>
+        <h2>Jogadoras</h2>
+
+        <input id="playerNumber"
+               type="number"
+               placeholder="Número">
+
+        <input id="playerName"
+               placeholder="Nome">
+
+        <button class="black"
+                style="width:100%"
+                onclick="addPlayer()">
+            + ADICIONAR JOGADORA
+        </button>
+
+        <div id="setupPlayers"
+             style="margin-top:15px">
+        </div>
+
     </div>
 
-  </div>
-
-  <button class="secondary" onclick="undo()">
-    ↩ Desfazer última ação
-  </button>
-
 </div>
 
 
-<div class="card">
+<!-- JOGO -->
 
-  <h2>Jogadora</h2>
+<div id="game" class="hidden">
 
-  <div class="players" id="players"></div>
+    <!-- RESULTADO -->
 
-  <br>
+    <div class="card">
 
-  <input id="playerNumber" type="number" placeholder="Número">
+        <div class="score">
 
-  <input id="playerName" placeholder="Nome da jogadora">
+            <div class="team">
 
-  <button class="primary" onclick="addPlayer()">
-    + Adicionar jogadora
-  </button>
+                <div class="team-name"
+                     id="teamDisplay">
+                </div>
+
+                <div class="score-number"
+                     id="scoreA">
+                    0
+                </div>
+
+                <button class="red"
+                        style="width:100%"
+                        onclick="point('A')">
+                    + PONTO
+                </button>
+
+            </div>
+
+
+            <div>
+
+                <div class="set-label">
+                    SET
+                </div>
+
+                <div style="font-size:28px;font-weight:800"
+                     id="setNumber">
+                    1
+                </div>
+
+            </div>
+
+
+            <div class="team">
+
+                <div class="team-name"
+                     id="opponentDisplay">
+                </div>
+
+                <div class="score-number"
+                     id="scoreB">
+                    0
+                </div>
+
+                <button class="black"
+                        style="width:100%"
+                        onclick="point('B')">
+                    + PONTO
+                </button>
+
+            </div>
+
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:15px">
+
+            <button class="light"
+                    onclick="undo()">
+                ↩ DESFAZER
+            </button>
+
+            <button class="light"
+                    onclick="finishSet()">
+                TERMINAR SET
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- SERVIÇO / RECEÇÃO -->
+
+    <div class="card">
+
+        <h2>🏐 Serviço e receção</h2>
+
+        <div class="role-grid">
+
+            <div class="role">
+
+                <span>QUEM SERVE</span>
+
+                <select id="server"
+                        onchange="changeRole('server')">
+                </select>
+
+            </div>
+
+            <div class="role">
+
+                <span>QUEM RECEBE</span>
+
+                <select id="receiver"
+                        onchange="changeRole('receiver')">
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- JOGADORA -->
+
+    <div class="card">
+
+        <h2>👤 Jogadora da ação</h2>
+
+        <div id="players"
+             class="players">
+        </div>
+
+        <button class="light"
+                style="width:100%;margin-top:10px"
+                onclick="showAddPlayer()">
+            + ADICIONAR JOGADORA
+        </button>
+
+    </div>
+
+
+    <!-- AÇÕES -->
+
+    <div class="card">
+
+        <h2>Registar ação</h2>
+
+        <div class="actions">
+
+            <button class="action-positive"
+                    onclick="action('Serviço +')">
+                🏐 Serviço +
+            </button>
+
+            <button class="action-negative"
+                    onclick="action('Serviço -')">
+                Serviço −
+            </button>
+
+            <button class="action-positive"
+                    onclick="action('Receção +')">
+                🎯 Receção +
+            </button>
+
+            <button class="action-negative"
+                    onclick="action('Receção -')">
+                Receção −
+            </button>
+
+            <button class="action-positive"
+                    onclick="action('Ataque +')">
+                ⚡ Ataque +
+            </button>
+
+            <button class="action-negative"
+                    onclick="action('Ataque -')">
+                Ataque −
+            </button>
+
+            <button class="action-positive"
+                    onclick="action('Bloco +')">
+                🛡 Bloco +
+            </button>
+
+            <button class="action-negative"
+                    onclick="action('Bloco -')">
+                Bloco −
+            </button>
+
+            <button class="action-positive"
+                    onclick="action('Defesa +')">
+                Defesa +
+            </button>
+
+            <button class="action-negative"
+                    onclick="action('Erro')">
+                ❌ Erro
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- SETS -->
+
+    <div class="card">
+
+        <h2>📋 Sets</h2>
+
+        <div id="sets"
+             class="sets">
+
+            <div class="empty">
+                Nenhum set terminado.
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ESTATÍSTICAS -->
+
+    <div class="card">
+
+        <h2>📊 Estatísticas</h2>
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Jogadora</th>
+                        <th>S+</th>
+                        <th>S−</th>
+                        <th>R+</th>
+                        <th>R−</th>
+                        <th>A+</th>
+                        <th>A−</th>
+                        <th>B+</th>
+                        <th>B−</th>
+                        <th>D+</th>
+                        <th>Erros</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="stats">
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- REGISTO -->
+
+    <div class="card">
+
+        <h2>📝 Registo</h2>
+
+        <div id="log"
+             class="log">
+
+            <div class="empty">
+                Ainda não existem ações.
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <button class="red"
+                style="width:100%"
+                onclick="newGame()">
+            NOVO JOGO
+        </button>
+
+    </div>
 
 </div>
 
-
-<div class="card">
-
-  <h2>Ação</h2>
-
-  <div class="buttons">
-
-    <button class="primary" onclick="action('Serviço +')">
-      🏐 Serviço +
-    </button>
-
-    <button class="danger" onclick="action('Serviço -')">
-      Serviço -
-    </button>
-
-    <button class="primary" onclick="action('Receção +')">
-      🎯 Receção +
-    </button>
-
-    <button class="danger" onclick="action('Receção -')">
-      Receção -
-    </button>
-
-    <button class="success" onclick="action('Ataque +')">
-      ⚡ Ataque +
-    </button>
-
-    <button class="danger" onclick="action('Ataque -')">
-      Ataque -
-    </button>
-
-    <button class="success" onclick="action('Bloco +')">
-      🛡 Bloco +
-    </button>
-
-    <button class="danger" onclick="action('Bloco -')">
-      Bloco -
-    </button>
-
-    <button class="secondary" onclick="action('Defesa +')">
-      Defesa +
-    </button>
-
-    <button class="danger" onclick="action('Erro')">
-      ✕ Erro
-    </button>
-
-  </div>
+<footer>
+    Estatística de Voleibol • Oeiras
+</footer>
 
 </div>
 
-
-<div class="card">
-
-  <h2>Registo do jogo</h2>
-
-  <div class="log" id="log"></div>
-
-</div>
-
-
-<div class="card">
-
-  <h2>Estatísticas</h2>
-
-  <table class="stat-table">
-
-    <thead>
-      <tr>
-        <th>Jogadora</th>
-        <th>Serviço</th>
-        <th>Receção</th>
-        <th>Ataque</th>
-        <th>Bloco</th>
-        <th>Erros</th>
-      </tr>
-    </thead>
-
-    <tbody id="stats"></tbody>
-
-  </table>
-
-</div>
-```
-
-  </div>
-
-</div>
 
 <script>
 
+const STORAGE = "oeirasVoleiV2";
+
 let game = {
-  team: "",
-  opponent: "",
-  set: 1,
-  scoreA: 0,
-  scoreB: 0,
-  players: [],
-  selectedPlayer: null,
-  actions: [],
-  history: []
+    team:"Oeiras",
+    opponent:"",
+    set:1,
+    scoreA:0,
+    scoreB:0,
+    players:[],
+    selected:null,
+    server:null,
+    receiver:null,
+    sets:[],
+    events:[],
+    history:[]
 };
 
 
-function startGame() {
+/* ------------------------
+   INÍCIO
+------------------------- */
 
-  game.team = document.getElementById("teamName").value || "A nossa equipa";
-  game.opponent = document.getElementById("opponentName").value || "Adversário";
+function startGame(){
 
-  document.getElementById("setup").classList.add("hidden");
-  document.getElementById("game").classList.remove("hidden");
+    game.team =
+        document.getElementById("teamName").value
+        || "Oeiras";
 
-  document.getElementById("gameTitle").innerText =
-    game.team + " vs " + game.opponent;
+    game.opponent =
+        document.getElementById("opponentName").value
+        || "Adversário";
 
-  document.getElementById("teamDisplay").innerText = game.team;
-  document.getElementById("opponentDisplay").innerText = game.opponent;
+    save();
 
-  save();
+    document.getElementById("setup")
+        .classList.add("hidden");
+
+    document.getElementById("game")
+        .classList.remove("hidden");
+
+    renderAll();
 }
 
 
-function addPlayer() {
+/* ------------------------
+   JOGADORAS
+------------------------- */
 
-  const number = document.getElementById("playerNumber").value;
-  const name = document.getElementById("playerName").value;
+function addPlayer(){
 
-  if (!number) {
-    alert("Indique o número da jogadora.");
-    return;
-  }
+    const number =
+        document.getElementById("playerNumber").value;
 
-  game.players.push({
-    number: number,
-    name: name || "Jogadora " + number,
-    stats: {
-      "Serviço +": 0,
-      "Serviço -": 0,
-      "Receção +": 0,
-      "Receção -": 0,
-      "Ataque +": 0,
-      "Ataque -": 0,
-      "Bloco +": 0,
-      "Bloco -": 0,
-      "Defesa +": 0,
-      "Erro": 0
+    const name =
+        document.getElementById("playerName").value;
+
+    if(!number){
+        alert("Indique o número da jogadora.");
+        return;
     }
-  });
 
-  document.getElementById("playerNumber").value = "";
-  document.getElementById("playerName").value = "";
+    game.players.push({
+        number:number,
+        name:name || "Jogadora "+number,
 
-  renderPlayers();
-  renderStats();
-  save();
+        stats:{
+            "Serviço +":0,
+            "Serviço -":0,
+            "Receção +":0,
+            "Receção -":0,
+            "Ataque +":0,
+            "Ataque -":0,
+            "Bloco +":0,
+            "Bloco -":0,
+            "Defesa +":0,
+            "Erro":0
+        }
+    });
+
+    document.getElementById("playerNumber").value="";
+    document.getElementById("playerName").value="";
+
+    renderAll();
+    save();
 }
 
 
-function renderPlayers() {
+function showAddPlayer(){
 
-  const container = document.getElementById("players");
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
 
-  container.innerHTML = "";
+    document.getElementById("setup")
+        .classList.remove("hidden");
 
-  game.players.forEach((player, index) => {
+    document.getElementById("game")
+        .classList.add("hidden");
+}
 
-    const div = document.createElement("div");
 
-    div.className = "player";
+function selectPlayer(index){
 
-    if (game.selectedPlayer === index) {
-      div.classList.add("active");
+    game.selected=index;
+
+    renderPlayers();
+    save();
+}
+
+
+/* ------------------------
+   SERVIÇO / RECEÇÃO
+------------------------- */
+
+function renderRoles(){
+
+    const server =
+        document.getElementById("server");
+
+    const receiver =
+        document.getElementById("receiver");
+
+    server.innerHTML =
+        '<option value="">Selecionar</option>';
+
+    receiver.innerHTML =
+        '<option value="">Selecionar</option>';
+
+    game.players.forEach((p,i)=>{
+
+        const text =
+            "#"+p.number+" "+p.name;
+
+        server.innerHTML +=
+            `<option value="${i}">${text}</option>`;
+
+        receiver.innerHTML +=
+            `<option value="${i}">${text}</option>`;
+
+    });
+
+    if(game.server !== null){
+        server.value=game.server;
     }
 
-    div.innerHTML =
-      "<strong>#" + player.number + "</strong><br>" +
-      player.name;
+    if(game.receiver !== null){
+        receiver.value=game.receiver;
+    }
+}
 
-    div.onclick = function() {
-      game.selectedPlayer = index;
-      renderPlayers();
+
+function changeRole(type){
+
+    if(type==="server"){
+
+        const value =
+            document.getElementById("server").value;
+
+        game.server =
+            value==="" ? null : Number(value);
+    }
+
+    if(type==="receiver"){
+
+        const value =
+            document.getElementById("receiver").value;
+
+        game.receiver =
+            value==="" ? null : Number(value);
+    }
+
+    save();
+}
+
+
+/* ------------------------
+   PONTUAÇÃO
+------------------------- */
+
+function point(team){
+
+    game.history.push({
+        type:"score",
+        scoreA:game.scoreA,
+        scoreB:game.scoreB
+    });
+
+    if(team==="A"){
+        game.scoreA++;
+    }else{
+        game.scoreB++;
+    }
+
+    save();
+    renderScore();
+}
+
+
+/* ------------------------
+   AÇÕES
+------------------------- */
+
+function action(type){
+
+    if(game.selected===null){
+
+        alert("Selecione primeiro a jogadora.");
+
+        return;
+    }
+
+    const player =
+        game.players[game.selected];
+
+    player.stats[type]++;
+
+    game.history.push({
+        type:"action",
+        player:game.selected,
+        action:type
+    });
+
+    game.events.unshift({
+
+        set:game.set,
+
+        score:
+            game.scoreA+"-"+game.scoreB,
+
+        player:
+            "#"+player.number+" "+player.name,
+
+        action:type
+
+    });
+
+    save();
+
+    renderStats();
+    renderLog();
+}
+
+
+/* ------------------------
+   DESFAZER
+------------------------- */
+
+function undo(){
+
+    const last =
+        game.history.pop();
+
+    if(!last){
+
+        alert("Nada para desfazer.");
+
+        return;
+    }
+
+    if(last.type==="score"){
+
+        game.scoreA=last.scoreA;
+        game.scoreB=last.scoreB;
+
+    }
+
+    if(last.type==="action"){
+
+        const player =
+            game.players[last.player];
+
+        if(player &&
+           player.stats[last.action]>0){
+
+            player.stats[last.action]--;
+
+        }
+
+        game.events.shift();
+    }
+
+    save();
+    renderAll();
+}
+
+
+/* ------------------------
+   TERMINAR SET
+------------------------- */
+
+function finishSet(){
+
+    if(game.scoreA===0 &&
+       game.scoreB===0){
+
+        alert("O set ainda não tem pontos.");
+
+        return;
+    }
+
+    game.sets.push({
+
+        set:game.set,
+
+        scoreA:game.scoreA,
+
+        scoreB:game.scoreB
+
+    });
+
+    game.set++;
+
+    game.scoreA=0;
+    game.scoreB=0;
+
+    game.history=[];
+
+    save();
+
+    renderAll();
+}
+
+
+/* ------------------------
+   NOVO JOGO
+------------------------- */
+
+function newGame(){
+
+    if(!confirm("Começar um novo jogo?")){
+        return;
+    }
+
+    const players =
+        game.players;
+
+    game = {
+
+        team:"Oeiras",
+        opponent:"",
+        set:1,
+        scoreA:0,
+        scoreB:0,
+        players:players,
+        selected:null,
+        server:null,
+        receiver:null,
+        sets:[],
+        events:[],
+        history:[]
+
     };
 
-    container.appendChild(div);
-  });
+    document.getElementById("game")
+        .classList.add("hidden");
+
+    document.getElementById("setup")
+        .classList.remove("hidden");
+
+    save();
 }
 
 
-function addPoint(team) {
+/* ------------------------
+   DESENHO
+------------------------- */
 
-  game.history.push({
-    scoreA: game.scoreA,
-    scoreB: game.scoreB
-  });
+function renderScore(){
 
-  if (team === "A") {
-    game.scoreA++;
-  } else {
-    game.scoreB++;
-  }
+    document.getElementById("scoreA")
+        .innerText=game.scoreA;
 
-  updateScore();
+    document.getElementById("scoreB")
+        .innerText=game.scoreB;
 
-  save();
+    document.getElementById("setNumber")
+        .innerText=game.set;
+
+    document.getElementById("teamDisplay")
+        .innerText=game.team;
+
+    document.getElementById("opponentDisplay")
+        .innerText=game.opponent;
 }
 
 
-function updateScore() {
+function renderPlayers(){
 
-  document.getElementById("scoreA").innerText = game.scoreA;
-  document.getElementById("scoreB").innerText = game.scoreB;
+    const box =
+        document.getElementById("players");
+
+    box.innerHTML="";
+
+    game.players.forEach((p,i)=>{
+
+        const div =
+            document.createElement("div");
+
+        div.className="player";
+
+        if(game.selected===i){
+            div.classList.add("selected");
+        }
+
+        div.innerHTML =
+            "#"+p.number+
+            "<br>"+
+            p.name;
+
+        div.onclick=()=>{
+            selectPlayer(i);
+        };
+
+        box.appendChild(div);
+
+    });
 }
 
 
-function action(type) {
+function renderStats(){
 
-  if (game.selectedPlayer === null) {
-    alert("Selecione primeiro uma jogadora.");
-    return;
-  }
+    const body =
+        document.getElementById("stats");
 
-  const player = game.players[game.selectedPlayer];
+    body.innerHTML="";
 
-  player.stats[type]++;
+    game.players.forEach(p=>{
 
-  const entry = {
-    set: game.set,
-    scoreA: game.scoreA,
-    scoreB: game.scoreB,
-    player: "#" + player.number + " " + player.name,
-    action: type
-  };
+        const s=p.stats;
 
-  game.actions.unshift(entry);
+        const row =
+            document.createElement("tr");
 
-  renderLog();
-  renderStats();
-  save();
+        row.innerHTML=`
+
+        <td>#${p.number} ${p.name}</td>
+
+        <td>${s["Serviço +"]}</td>
+        <td>${s["Serviço -"]}</td>
+
+        <td>${s["Receção +"]}</td>
+        <td>${s["Receção -"]}</td>
+
+        <td>${s["Ataque +"]}</td>
+        <td>${s["Ataque -"]}</td>
+
+        <td>${s["Bloco +"]}</td>
+        <td>${s["Bloco -"]}</td>
+
+        <td>${s["Defesa +"]}</td>
+
+        <td>${s["Erro"]}</td>
+
+        `;
+
+        body.appendChild(row);
+
+    });
 }
 
 
-function renderLog() {
+function renderLog(){
 
-  const log = document.getElementById("log");
+    const log =
+        document.getElementById("log");
 
-  log.innerHTML = "";
+    log.innerHTML="";
 
-  game.actions.forEach(item => {
+    if(game.events.length===0){
 
-    const div = document.createElement("div");
+        log.innerHTML=
+            '<div class="empty">Ainda não existem ações.</div>';
 
-    div.innerText =
-      "Set " + item.set +
-      " | " +
-      item.scoreA + "-" + item.scoreB +
-      " | " +
-      item.player +
-      " | " +
-      item.action;
-
-    log.appendChild(div);
-
-  });
-}
-
-
-function renderStats() {
-
-  const tbody = document.getElementById("stats");
-
-  tbody.innerHTML = "";
-
-  game.players.forEach(player => {
-
-    const row = document.createElement("tr");
-
-    row.innerHTML =
-      "<td>#" + player.number + " " + player.name + "</td>" +
-      "<td>" + player.stats["Serviço +"] + "/" + player.stats["Serviço -"] + "</td>" +
-      "<td>" + player.stats["Receção +"] + "/" + player.stats["Receção -"] + "</td>" +
-      "<td>" + player.stats["Ataque +"] + "/" + player.stats["Ataque -"] + "</td>" +
-      "<td>" + player.stats["Bloco +"] + "/" + player.stats["Bloco -"] + "</td>" +
-      "<td>" + player.stats["Erro"] + "</td>";
-
-    tbody.appendChild(row);
-  });
-}
-
-
-function undo() {
-
-  if (game.history.length === 0) {
-    return;
-  }
-
-  const previous = game.history.pop();
-
-  game.scoreA = previous.scoreA;
-  game.scoreB = previous.scoreB;
-
-  updateScore();
-
-  save();
-}
-
-
-function save() {
-
-  localStorage.setItem(
-    "voleibolGame",
-    JSON.stringify(game)
-  );
-
-}
-
-
-const saved = localStorage.getItem("voleibolGame");
-
-if (saved) {
-
-  try {
-
-    game = JSON.parse(saved);
-
-    if (game.team) {
-
-      document.getElementById("setup").classList.add("hidden");
-      document.getElementById("game").classList.remove("hidden");
-
-      document.getElementById("gameTitle").innerText =
-        game.team + " vs " + game.opponent;
-
-      document.getElementById("teamDisplay").innerText =
-        game.team;
-
-      document.getElementById("opponentDisplay").innerText =
-        game.opponent;
-
-      updateScore();
-      renderPlayers();
-      renderStats();
-      renderLog();
-
+        return;
     }
 
-  } catch (e) {}
+    game.events.forEach(e=>{
+
+        const div =
+            document.createElement("div");
+
+        div.className="log-item";
+
+        div.innerText =
+            "Set "+e.set+
+            " • "+e.score+
+            " • "+e.player+
+            " • "+e.action;
+
+        log.appendChild(div);
+
+    });
+}
+
+
+function renderSets(){
+
+    const box =
+        document.getElementById("sets");
+
+    box.innerHTML="";
+
+    if(game.sets.length===0){
+
+        box.innerHTML=
+            '<div class="empty">Nenhum set terminado.</div>';
+
+        return;
+    }
+
+    game.sets.forEach(s=>{
+
+        const div =
+            document.createElement("div");
+
+        div.className="set-result";
+
+        div.innerText =
+            "Set "+s.set+
+            " — "+
+            game.team+" "+
+            s.scoreA+
+            " : "+
+            s.scoreB+
+            " "+
+            game.opponent;
+
+        box.appendChild(div);
+
+    });
+}
+
+
+function renderSetupPlayers(){
+
+    const box =
+        document.getElementById("setupPlayers");
+
+    if(!box){
+        return;
+    }
+
+    box.innerHTML="";
+
+    game.players.forEach(p=>{
+
+        const div =
+            document.createElement("div");
+
+        div.style.padding="8px";
+        div.style.borderBottom="1px solid #ddd";
+
+        div.innerText =
+            "#"+p.number+" "+p.name;
+
+        box.appendChild(div);
+
+    });
+}
+
+
+function renderAll(){
+
+    renderScore();
+    renderPlayers();
+    renderStats();
+    renderLog();
+    renderSets();
+    renderRoles();
+    renderSetupPlayers();
+}
+
+
+/* ------------------------
+   GUARDAR
+------------------------- */
+
+function save(){
+
+    localStorage.setItem(
+        STORAGE,
+        JSON.stringify(game)
+    );
+}
+
+
+/* ------------------------
+   CARREGAR
+------------------------- */
+
+const saved =
+    localStorage.getItem(STORAGE);
+
+if(saved){
+
+    try{
+
+        game =
+            JSON.parse(saved);
+
+        if(game.team &&
+           game.opponent){
+
+            document.getElementById("setup")
+                .classList.add("hidden");
+
+            document.getElementById("game")
+                .classList.remove("hidden");
+
+            renderAll();
+        }
+
+    }catch(e){
+
+        console.log(e);
+
+    }
 
 }
 
