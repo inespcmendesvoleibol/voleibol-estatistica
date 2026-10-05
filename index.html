@@ -1,2624 +1,355 @@
-<!DOCTYPE html>
-<html lang="pt">
+<!doctype html>
+<html lang="pt-PT">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Voleibol Oeiras</title>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Voleibol Oeiras — Estatística</title>
 <style>
-*{box-sizing:border-box}
-
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f5f5f5;
-  color:#111;
-}
-
-header{
-  background:#111;
-  color:#fff;
-  text-align:center;
-  padding:12px;
-  font-size:20px;
-  font-weight:bold;
-}
-
-main{
-  max-width:760px;
-  margin:auto;
-  padding:10px;
-}
-
-.card{
-  background:#fff;
-  border-radius:10px;
-  padding:12px;
-  margin-bottom:10px;
-  box-shadow:0 1px 4px #ccc;
-}
-
-h2{
-  margin:0 0 10px;
-  font-size:18px;
-}
-
-input,select,button{
-  font-size:16px;
-  border-radius:7px;
-  border:1px solid #bbb;
-  padding:9px;
-}
-
-input,select{
-  width:100%;
-  margin-bottom:7px;
-}
-
-button{
-  background:#111;
-  color:#fff;
-  border:none;
-  cursor:pointer;
-}
-
-button:active{
-  transform:scale(.97);
-}
-
-.red{background:#c40000}
-.grey{background:#666}
-.green{background:#176b38}
-.white{
-  background:#fff;
-  color:#111;
-  border:1px solid #aaa;
-}
-
-.score{
-  display:flex;
-  gap:8px;
-  text-align:center;
-}
-
-.scoreBox{
-  flex:1;
-  border-radius:10px;
-  padding:8px;
-  background:#111;
-  color:#fff;
-}
-
-.scoreNumber{
-  font-size:42px;
-  font-weight:bold;
-}
-
-.scoreTeam{
-  font-size:14px;
-}
-
-.players{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:6px;
-}
-
-.player{
-  padding:6px 3px;
-  min-height:54px;
-  background:#eee;
-  color:#111;
-  border:2px solid transparent;
-  font-size:13px;
-}
-
-.player.selected{
-  border-color:#c40000;
-  background:#ffe5e5;
-}
-
-.player.libero{
-  background:#dceeff;
-  border-color:#1683c7;
-}
-
-.player small{
-  display:block;
-  font-size:10px;
-  margin-top:2px;
-}
-
-.playerActions{
-  display:flex;
-  justify-content:center;
-  gap:4px;
-  margin-top:4px;
-}
-
-.playerActions button{
-  font-size:11px;
-  padding:4px 6px;
-}
-
-.selectedInfo{
-  padding:8px;
-  background:#fff1f1;
-  border-left:4px solid #c40000;
-  margin-bottom:8px;
-}
-
-.roles{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-}
-
-.roles label{
-  font-size:13px;
-  font-weight:bold;
-}
-
-.actionGrid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:7px;
-}
-
-.actionBlock{
-  border:1px solid #ddd;
-  border-radius:8px;
-  padding:7px;
-  background:#fafafa;
-}
-
-.actionTitle{
-  font-weight:bold;
-  margin-bottom:5px;
-  font-size:14px;
-}
-
-.actionButtons{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:5px;
-}
-
-.actionButtons.three{
-  grid-template-columns:repeat(3,1fr);
-}
-
-.actionButtons.four{
-  grid-template-columns:repeat(4,1fr);
-}
-
-.actionButtons button{
-  padding:8px 3px;
-  font-size:13px;
-}
-
-.cont{background:#555}
-.point{background:#111}
-.error{background:#c40000}
-
-.feedback{
-  margin-top:8px;
-  padding:9px;
-  border-radius:7px;
-  background:#eee;
-  font-weight:bold;
-  text-align:center;
-  min-height:38px;
-}
-
-.setupPlayers{
-  display:grid;
-  grid-template-columns:65px 1fr auto auto;
-  gap:5px;
-  align-items:center;
-  margin-bottom:5px;
-}
-
-.setupPlayers input{
-  margin:0;
-}
-
-.liberoCheck{
-  width:auto;
-  margin:0;
-}
-
-.topButtons{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:7px;
-}
-
-.topButtons button{
-  width:100%;
-}
-
-.statsTable{
-  width:100%;
-  border-collapse:collapse;
-  font-size:12px;
-}
-
-.statsTable th,
-.statsTable td{
-  border:1px solid #ddd;
-  padding:5px 3px;
-  text-align:center;
-}
-
-.statsTable th{
-  background:#111;
-  color:#fff;
-}
-
-.statsTable .liberoRow{
-  background:#e5f3ff;
-}
-
-.log{
-  max-height:300px;
-  overflow:auto;
-  font-size:13px;
-}
-
-.logItem{
-  padding:6px;
-  border-bottom:1px solid #ddd;
-}
-
-.hidden{
-  display:none;
-}
-
-.setTable{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:8px;
-}
-
-.setTable th,
-.setTable td{
-  border:1px solid #ddd;
-  padding:6px;
-  text-align:center;
-}
-
-.setTable th{
-  background:#111;
-  color:#fff;
-}
-
-.report{
-  display:none;
-}
-
-
-/* =========================
-   IMPRESSÃO / PDF
-========================= */
-
+*{box-sizing:border-box} body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;margin:0;background:#f4f6f8;color:#18212b}
+header{background:#17212b;color:#fff;padding:14px 16px;position:sticky;top:0;z-index:5}
+header h1{font-size:19px;margin:0 0 3px} header small{opacity:.8}
+main{max-width:1100px;margin:auto;padding:12px}
+.card{background:#fff;border-radius:14px;padding:14px;margin:10px 0;box-shadow:0 1px 4px #0001}
+h2{font-size:16px;margin:0 0 10px}.row{display:flex;gap:8px;flex-wrap:wrap}.grow{flex:1}
+input,select,button{font:inherit;border-radius:9px;border:1px solid #ccd3da;padding:10px}
+input,select{background:#fff;min-width:0}button{background:#17212b;color:#fff;border:0;font-weight:600;cursor:pointer}
+button.secondary{background:#e8edf1;color:#18212b}.danger{background:#b42318}.green{background:#19734b}.blue{background:#2458a6}
+label{font-size:12px;font-weight:700;display:block;margin-bottom:4px}
+.score{font-size:38px;font-weight:800;text-align:center;margin:4px 0}.sets{text-align:center;color:#596570}
+.players{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px}
+.player{position:relative;border:2px solid #d7dde2;border-radius:10px;background:#fafbfc;padding:8px 4px;text-align:center;min-height:62px}
+.player.selected{border-color:#17212b;background:#eef2f5}.player.libero{border-color:#c58a00;background:#fff7d6}
+.player .num{font-size:20px;font-weight:800}.player .name{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player .tools{display:flex;justify-content:center;gap:3px;margin-top:4px}.player .tools button{padding:2px 5px;font-size:11px;background:#dfe5e9;color:#17212b}
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.actions button{min-height:46px}
+.feedback{margin-top:8px;padding:9px;border-radius:9px;background:#edf6ee;font-weight:700;min-height:38px}
+table{width:100%;border-collapse:collapse;font-size:11px}th,td{border:1px solid #d8dde2;padding:5px;text-align:center}th{background:#eef2f5}td.left,th.left{text-align:left}
+.table-wrap{overflow:auto}.muted{color:#68737e;font-size:12px}
+.log{max-height:220px;overflow:auto;font-size:12px}.log div{padding:5px;border-bottom:1px solid #edf0f2}
+.hide{display:none}
+.report{display:none}
+@media(min-width:700px){.actions{grid-template-columns:repeat(4,1fr)}}
 @media print{
-
-  @page{
-    size:A4;
-    margin:12mm;
-  }
-
-  body{
-    background:#fff;
-    font-family:Arial,sans-serif;
-  }
-
-  header{
-    background:#111 !important;
-    color:#fff !important;
-    print-color-adjust:exact;
-    -webkit-print-color-adjust:exact;
-  }
-
-  main{
-    max-width:none;
-    padding:0;
-  }
-
-  #setup,
-  #gameScreen{
-    display:none !important;
-  }
-
-  .report{
-    display:block !important;
-  }
-
-  .report h1{
-    text-align:center;
-    margin:0 0 5px;
-    font-size:22px;
-  }
-
-  .report .subtitle{
-    text-align:center;
-    font-size:15px;
-    margin-bottom:15px;
-  }
-
-  .report h2{
-    margin-top:16px;
-    font-size:16px;
-    border-bottom:2px solid #111;
-    padding-bottom:4px;
-  }
-
-  .report table{
-    width:100%;
-    border-collapse:collapse;
-    font-size:10px;
-  }
-
-  .report th,
-  .report td{
-    border:1px solid #999;
-    padding:4px 3px;
-    text-align:center;
-  }
-
-  .report th{
-    background:#111 !important;
-    color:#fff !important;
-    print-color-adjust:exact;
-    -webkit-print-color-adjust:exact;
-  }
-
-  .report td:first-child,
-  .report th:first-child{
-    text-align:left;
-  }
-
-  .report .liberoRow{
-    background:#e5f3ff !important;
-    print-color-adjust:exact;
-    -webkit-print-color-adjust:exact;
-  }
-
-  .report .summary{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px;
-    margin:10px 0;
-  }
-
-  .report .summaryBox{
-    border:1px solid #999;
-    padding:8px;
-    text-align:center;
-  }
-
-  .report .big{
-    font-size:24px;
-    font-weight:bold;
-  }
-
-  .report .small{
-    font-size:9px;
-    color:#555;
-  }
-
-  .report .footer{
-    margin-top:18px;
-    font-size:9px;
-    color:#555;
-    text-align:center;
-  }
-}
-
-@media(max-width:420px){
-
-  .players{
-    grid-template-columns:repeat(3,1fr);
-  }
-
-  .player{
-    font-size:12px;
-    min-height:50px;
-  }
-
-  .actionGrid{
-    grid-template-columns:1fr;
-  }
-
-  .roles{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .statsTable{
-    font-size:10px;
-  }
-
-  .setupPlayers{
-    grid-template-columns:55px 1fr auto;
-  }
-
-  .setupPlayers label{
-    grid-column:2;
-  }
-
-  .setupPlayers button{
-    grid-column:3;
-    grid-row:1 / span 2;
-  }
+ @page{size:A4 landscape;margin:8mm}
+ body{background:#fff;font-size:9px}.no-print,header{display:none!important}.report{display:block!important}
+ .report h1{font-size:18px;margin:0 0 3px}.report h2{font-size:12px;margin:8px 0 3px}
+ .report .meta{display:flex;justify-content:space-between;margin-bottom:5px}
+ .report table{font-size:7px}.report th,.report td{padding:2.5px 2px}
+ .report .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+ .report .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+ .report .charts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+ .report .chartbox{border:1px solid #ddd;padding:4px;min-height:105px}
+ .report .donutwrap{display:flex;align-items:center;gap:12px}
+ .report .donut{width:105px;height:105px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center}
+ .report .donut:after{content:"";position:absolute;inset:28px;background:#fff;border-radius:50%}
+ .report .donutcenter{position:relative;z-index:2;width:58px;text-align:center;font-size:6.5px;font-weight:800;line-height:1.15}
+ .legend{font-size:7px;line-height:1.35}.legend span{display:block}
+ .bubblebox{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.liberochart{flex:1;min-width:150px}
+ .bubbles{height:100px;display:flex;align-items:center;justify-content:center;gap:4px}
+ .bubble{border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;font-size:7px;border:1px solid #555}
+ .bubble.A{background:#d9e8ff}.bubble.B{background:#d9f3e5}.bubble.C{background:#fff0bf}.bubble.R0{background:#ffd9d6}
+ .foot{display:flex;justify-content:space-between;margin-top:7px;font-size:9px}
 }
 </style>
 </head>
-
 <body>
+<header><h1>Voleibol Oeiras — Estatística</h1><small>Registo de jogo</small></header>
 
-<header>🏐 VOLEIBOL OEIRAS</header>
-
-<main>
-
-<!-- =========================
-     CONFIGURAÇÃO
-========================= -->
-
-<section id="setup">
-
-  <div class="card">
-
-    <h2>Novo jogo</h2>
-
-    <input id="teamName" value="Oeiras" placeholder="Nossa equipa">
-
-    <input id="opponentName" placeholder="Adversário">
-
-    <h2>Atletas</h2>
-
-    <div id="setupPlayers"></div>
-
-    <button onclick="addPlayerRow()">
-      ＋ Adicionar atleta
-    </button>
-
-    <br><br>
-
-    <button class="red" onclick="startGame()">
-      COMEÇAR JOGO
-    </button>
-
-  </div>
-
+<main class="no-print">
+<section class="card">
+<h2>1. Jogo</h2>
+<div class="row">
+<div class="grow"><label>Equipa</label><input id="team" value="Voleibol Oeiras"></div>
+<div class="grow"><label>Adversário</label><input id="opponent" placeholder="Nome do adversário"></div>
+<div><label>Data</label><input id="date" type="date"></div>
+</div>
 </section>
 
-
-<!-- =========================
-     JOGO
-========================= -->
-
-<section id="gameScreen" class="hidden">
-
-  <div class="card">
-
-    <div class="score">
-
-      <div class="scoreBox">
-        <div class="scoreTeam" id="teamDisplay">
-          Oeiras
-        </div>
-
-        <div class="scoreNumber" id="scoreA">
-          0
-        </div>
-      </div>
-
-      <div class="scoreBox">
-        <div class="scoreTeam" id="opponentDisplay">
-          Adversário
-        </div>
-
-        <div class="scoreNumber" id="scoreB">
-          0
-        </div>
-      </div>
-
-    </div>
-
-    <div style="text-align:center;margin-top:8px;font-weight:bold">
-      SET <span id="setNumber">1</span>
-    </div>
-
-  </div>
-
-
-  <!-- ATLETAS -->
-
-  <div class="card">
-
-    <h2>Atleta</h2>
-
-    <div id="selectedInfo" class="selectedInfo">
-      Selecione um atleta
-    </div>
-
-    <div id="players" class="players"></div>
-
-  </div>
-
-
-  <!-- SERVIDOR / RECEBEDOR -->
-
-  <div class="card">
-
-    <h2>Funções</h2>
-
-    <div class="roles">
-
-      <div>
-        <label>Quem serve</label>
-
-        <select id="serverSelect"
-                onchange="changeServer(this.value)">
-        </select>
-      </div>
-
-      <div>
-        <label>Quem recebe</label>
-
-        <select id="receiverSelect"
-                onchange="changeReceiver(this.value)">
-        </select>
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- AÇÕES -->
-
-  <div class="card">
-
-    <h2>Ações</h2>
-
-    <div class="actionGrid">
-
-
-      <!-- SERVIÇO -->
-
-      <div class="actionBlock">
-
-        <div class="actionTitle">
-          🏐 Serviço
-        </div>
-
-        <div class="actionButtons four">
-
-          <button onclick="registerAction('Serviço','RA')">
-            RA
-          </button>
-
-          <button onclick="registerAction('Serviço','RB')">
-            RB
-          </button>
-
-          <button onclick="registerAction('Serviço','RC')">
-            RC
-          </button>
-
-          <button class="point"
-                  onclick="registerAction('Serviço','R0')">
-            R0
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <!-- RECEÇÃO -->
-
-      <div class="actionBlock">
-
-        <div class="actionTitle">
-          👐 Receção
-        </div>
-
-        <div class="actionButtons four">
-
-          <button onclick="registerAction('Receção','A')">
-            A
-          </button>
-
-          <button onclick="registerAction('Receção','B')">
-            B
-          </button>
-
-          <button onclick="registerAction('Receção','C')">
-            C
-          </button>
-
-          <button class="error"
-                  onclick="registerAction('Receção','Erro')">
-            Erro
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <!-- ATAQUE -->
-
-      <div class="actionBlock">
-
-        <div class="actionTitle">
-          ⚡ Ataque
-        </div>
-
-        <div class="actionButtons three">
-
-          <button class="point"
-                  onclick="registerAction('Ataque','Ponto')">
-            Ponto
-          </button>
-
-          <button class="cont"
-                  onclick="registerAction('Ataque','Continuação')">
-            Continuação
-          </button>
-
-          <button class="error"
-                  onclick="registerAction('Ataque','Erro')">
-            Erro
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <!-- BLOCO -->
-
-      <div class="actionBlock">
-
-        <div class="actionTitle">
-          🧱 Bloco
-        </div>
-
-        <div class="actionButtons three">
-
-          <button class="point"
-                  onclick="registerAction('Bloco','Ponto')">
-            Ponto
-          </button>
-
-          <button class="cont"
-                  onclick="registerAction('Bloco','Continuação')">
-            Continuação
-          </button>
-
-          <button class="error"
-                  onclick="registerAction('Bloco','Erro')">
-            Erro
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <!-- DEFESA -->
-
-      <div class="actionBlock">
-
-        <div class="actionTitle">
-          🛡️ Defesa
-        </div>
-
-        <div class="actionButtons">
-
-          <button class="cont"
-                  onclick="registerAction('Defesa','+')">
-            + Continuação
-          </button>
-
-          <button class="error"
-                  onclick="registerAction('Defesa','-')">
-            − Erro
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <!-- FALTAS -->
-
-      <div class="actionBlock">
-
-        <div class="actionTitle">
-          ⚠️ Faltas / erros
-        </div>
-
-        <div class="actionButtons">
-
-          <button class="error"
-                  onclick="registerSpecial('Falta Oeiras','adversario')">
-            Falta Oeiras
-          </button>
-
-          <button class="point"
-                  onclick="registerSpecial('Falta adversário','oeiras')">
-            Falta adversário
-          </button>
-
-          <button class="error"
-                  onclick="registerSpecial('Falta no passe — erro','adversario')">
-            Falta no passe
-          </button>
-
-          <button class="point"
-                  onclick="registerSpecial('Erro deles','oeiras')">
-            Erro deles
-          </button>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div id="feedback" class="feedback">
-      Nenhuma ação registada.
-    </div>
-
-  </div>
-
-
-  <!-- SET -->
-
-  <div class="card">
-
-    <div class="topButtons">
-
-      <button onclick="finishSet()">
-        🏁 Fechar set
-      </button>
-
-      <button class="grey" onclick="undo()">
-        ↩ Desfazer
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <!-- ESTATÍSTICAS -->
-
-  <div class="card">
-
-    <h2>Estatísticas</h2>
-
-    <div id="stats"></div>
-
-  </div>
-
-
-  <!-- LOG -->
-
-  <div class="card">
-
-    <h2>Registo do jogo</h2>
-
-    <div id="log" class="log"></div>
-
-  </div>
-
-
-  <!-- BOTÕES FINAIS -->
-
-  <div class="card">
-
-    <button class="green"
-            onclick="exportPDF()"
-            style="width:100%;margin-bottom:7px">
-      📄 Exportar estatística em PDF
-    </button>
-
-    <button class="red"
-            onclick="newGame()"
-            style="width:100%">
-      🔄 Novo jogo
-    </button>
-
-  </div>
-
+<section class="card">
+<h2>2. Atletas</h2>
+<div class="row">
+<input id="num" inputmode="numeric" placeholder="N.º" style="width:80px">
+<input id="name" placeholder="Nome do atleta" class="grow">
+<label style="display:flex;align-items:center;gap:5px;margin:0"><input id="libero" type="checkbox"> Líbero</label>
+<button onclick="addPlayer()">Adicionar</button>
+</div>
+<div id="players" class="players" style="margin-top:10px"></div>
+<div class="muted" style="margin-top:7px">Toque num atleta para o selecionar. ✏️ corrige e 🗑️ elimina.</div>
 </section>
 
-
-<!-- =========================
-     RELATÓRIO PARA PDF
-========================= -->
-
-<section id="report" class="report">
-
-  <h1>🏐 VOLEIBOL OEIRAS</h1>
-
-  <div class="subtitle">
-    <strong id="reportTeam"></strong>
-    ×
-    <strong id="reportOpponent"></strong>
-    <br>
-    <span id="reportDate"></span>
-  </div>
-
-
-  <div class="summary">
-
-    <div class="summaryBox">
-      <div>Resultado</div>
-      <div class="big" id="reportResult"></div>
-    </div>
-
-    <div class="summaryBox">
-      <div>Sets</div>
-      <div class="big" id="reportSets"></div>
-    </div>
-
-  </div>
-
-
-  <h2>Parciais dos sets</h2>
-
-  <div id="reportSetsTable"></div>
-
-
-  <h2>Estatística dos atletas</h2>
-
-  <div id="reportStats"></div>
-
-
-  <h2>Pontos e erros</h2>
-
-  <div id="reportPoints"></div>
-
-
-  <div class="footer">
-    Estatística de jogo — Voleibol Oeiras
-  </div>
-
+<section class="card">
+<h2>3. Resultado</h2>
+<div id="score" class="score">0 — 0</div>
+<div id="sets" class="sets">Set 1</div>
 </section>
 
+<section class="card">
+<h2>4. Serviço e receção</h2>
+<div class="row">
+<div class="grow"><label>Quem serve</label><select id="server" onchange="selectFromSelect('server')"><option value="">— selecionar —</option></select></div>
+<div class="grow"><label>Quem recebe</label><select id="receiver" onchange="selectFromSelect('receiver')"><option value="">— selecionar —</option></select></div>
+</div>
+</section>
+
+<section class="card">
+<h2>5. Ações</h2>
+<div class="actions">
+<button onclick="service('RA')">Serviço RA</button>
+<button onclick="service('RB')">Serviço RB</button>
+<button onclick="service('RC')">Serviço RC</button>
+<button class="green" onclick="service('R0')">Serviço Ponto</button>
+<button class="danger" onclick="serviceError()">Serviço Erro</button>
+
+<button onclick="reception('A')">Receção A</button>
+<button onclick="reception('B')">Receção B</button>
+<button onclick="reception('C')">Receção C</button>
+<button class="danger" onclick="reception('R0')">Receção Erro</button>
+
+<button class="green" onclick="attack('Ponto')">Ataque Ponto</button>
+<button onclick="attack('Continuação')">Ataque Continuação</button>
+<button class="danger" onclick="attack('Erro')">Ataque Erro</button>
+<button class="green" onclick="opponentPointAttack()">Ponto Ataque Adversário</button>
+
+<button class="green" onclick="block('Ponto')">Bloco Ponto</button>
+<button onclick="block('Continuação')">Bloco Continuação</button>
+<button class="danger" onclick="block('Erro')">Bloco Erro</button>
+
+<button onclick="defense('+')">Defesa +</button>
+<button class="danger" onclick="defense('-')">Defesa −</button>
+
+<button class="danger" onclick="special('Falta Oeiras', 'opp')">Falta Oeiras</button>
+<button class="green" onclick="special('Falta Adversário', 'us')">Falta Adversário</button>
+<button class="danger" onclick="special('Falta no passe — erro', 'opp')">Falta no passe — erro</button>
+<button class="green" onclick="special('Erro deles', 'us')">Erro deles</button>
+</div>
+<div id="feedback" class="feedback">Selecione um atleta para começar.</div>
+</section>
+
+<section class="card">
+<div class="row">
+<button class="green" onclick="finishSet()">Terminar set</button>
+<button class="secondary" onclick="undo()">Desfazer última ação</button>
+<button class="blue" onclick="makeReport();window.print()">Exportar / Guardar PDF</button>
+<button class="danger" onclick="newGame()">Novo jogo</button>
+</div>
+</section>
+
+<section class="card">
+<h2>Estatísticas atuais</h2>
+<div class="table-wrap"><table id="liveTable"></table></div>
+</section>
+<section class="card">
+<h2>Registo</h2><div id="log" class="log"></div>
+</section>
 </main>
 
+<section id="report" class="report"></section>
 
 <script>
-
-/* =========================================================
-   DADOS DO JOGO
-========================================================= */
-
-let game = {
-
-  team:"Oeiras",
-  opponent:"Adversário",
-
-  set:1,
-
-  scoreA:0,
-  scoreB:0,
-
-  players:[],
-
-  selected:null,
-
-  server:null,
-  receiver:null,
-
-  sets:[],
-
-  events:[],
-
-  history:[],
-
-  startedAt:null
-
+const KEY='oeirasVoleiFINAL';
+let state=JSON.parse(localStorage.getItem(KEY)||'null')||{
+ team:'Voleibol Oeiras',opponent:'',date:new Date().toISOString().slice(0,10),
+ players:[],selected:null,server:null,receiver:null,setNo:1,our:0,opp:0,closedSets:[],events:[]
 };
 
-
-/* =========================================================
-   GUARDAR / CARREGAR
-========================================================= */
-
-function save(){
-
-  localStorage.setItem(
-    "oeirasVoleiFINAL",
-    JSON.stringify(game)
-  );
-
+function save(){localStorage.setItem(KEY,JSON.stringify(state));renderAll()}
+function player(){return state.players.find(p=>p.id===state.selected)}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function id(){return Date.now()+Math.random()}
+function addPlayer(){
+ let n=document.getElementById('num').value.trim(), name=document.getElementById('name').value.trim();
+ if(!n||!name){alert('Indique o número e o nome.');return}
+ if(state.players.some(p=>p.num===n)){alert('Esse número já existe.');return}
+ state.players.push({id:id(),num:n,name,libero:document.getElementById('libero').checked});
+ document.getElementById('num').value='';document.getElementById('name').value='';document.getElementById('libero').checked=false;
+ state.selected=state.players.at(-1).id;save();
 }
-
-
-function load(){
-
-  const data =
-    localStorage.getItem("oeirasVoleiFINAL");
-
-  if(!data) return;
-
-  try{
-
-    game=JSON.parse(data);
-
-    if(game.players && game.players.length){
-
-      document
-        .getElementById("setup")
-        .classList.add("hidden");
-
-      document
-        .getElementById("gameScreen")
-        .classList.remove("hidden");
-
-      render();
-
-    }
-
-  }catch(e){
-
-    console.log(e);
-
-  }
-
+function editPlayer(pid){
+ let p=state.players.find(x=>x.id===pid); if(!p)return;
+ let n=prompt('Número do atleta:',p.num); if(n===null)return;
+ let name=prompt('Nome do atleta:',p.name); if(name===null)return;
+ let isLib=confirm('É líbero? OK = Sim / Cancelar = Não');
+ p.num=n.trim()||p.num;p.name=name.trim()||p.name;p.libero=isLib;save();
 }
-
-
-/* =========================================================
-   ATLETAS — CONFIGURAÇÃO
-========================================================= */
-
-function addPlayerRow(
-  number="",
-  name="",
-  libero=false
-){
-
-  const container =
-    document.getElementById("setupPlayers");
-
-  const row=document.createElement("div");
-
-  row.className="setupPlayers";
-
-  row.innerHTML=`
-
-    <input
-      class="pNumber"
-      type="number"
-      placeholder="Nº"
-      value="${number}"
-    >
-
-    <input
-      class="pName"
-      type="text"
-      placeholder="Nome"
-      value="${escapeHtml(name)}"
-    >
-
-    <label style="font-size:12px;white-space:nowrap">
-      <input
-        class="liberoCheck"
-        type="checkbox"
-        ${libero ? "checked":""}
-      >
-      Líbero
-    </label>
-
-    <button
-      class="red"
-      onclick="this.parentElement.remove()">
-      ×
-    </button>
-
-  `;
-
-  container.appendChild(row);
-
+function deletePlayer(pid){
+ let p=state.players.find(x=>x.id===pid);if(!p)return;
+ if(!confirm('Eliminar '+p.num+' — '+p.name+'?'))return;
+ state.players=state.players.filter(x=>x.id!==pid);
+ if(state.selected===pid)state.selected=null;if(state.server===pid)state.server=null;if(state.receiver===pid)state.receiver=null;save();
 }
+function selectPlayer(pid){state.selected=pid;save()}
+function selectFromSelect(which){state[which]=document.getElementById(which).value||null;if(state[which])state.selected=state[which];save()}
+function selectedOr(id2){return state.players.find(p=>p.id===id2)||player()}
 
-
-function startGame(){
-
-  const rows =
-    document.querySelectorAll(".setupPlayers");
-
-  game.team =
-    document.getElementById("teamName")
-      .value.trim() || "Oeiras";
-
-  game.opponent =
-    document.getElementById("opponentName")
-      .value.trim() || "Adversário";
-
-  game.players=[];
-
-  rows.forEach(row=>{
-
-    const number =
-      row.querySelector(".pNumber")
-        .value.trim();
-
-    const name =
-      row.querySelector(".pName")
-        .value.trim();
-
-    const libero =
-      row.querySelector(".liberoCheck")
-        .checked;
-
-    if(name){
-
-      game.players.push({
-
-        number:number || "?",
-
-        name:name,
-
-        libero:libero,
-
-        stats:createStats()
-
-      });
-
-    }
-
-  });
-
-
-  if(game.players.length===0){
-
-    alert("Adicione pelo menos um atleta.");
-
-    return;
-
-  }
-
-
-  game.set=1;
-
-  game.scoreA=0;
-  game.scoreB=0;
-
-  game.events=[];
-  game.history=[];
-  game.sets=[];
-
-  game.server=null;
-  game.receiver=null;
-
-  game.selected=
-    game.players[0].number;
-
-  game.startedAt=
-    new Date().toISOString();
-
-
-  document
-    .getElementById("setup")
-    .classList.add("hidden");
-
-  document
-    .getElementById("gameScreen")
-    .classList.remove("hidden");
-
-
-  save();
-
-  render();
-
+function ensureStats(p){
+ if(!p.stats)p.stats={points:0,errors:0,serviceTotal:0,serviceErr:0,serviceRC:0,servicePts:0,
+ recA:0,recB:0,recC:0,recErr:0,attackTotal:0,attackErr:0,attackPts:0,blockPts:0};
+ return p.stats;
 }
-
-
-/* =========================================================
-   ESTATÍSTICAS BASE
-========================================================= */
-
-function createStats(){
-
-  return {
-
-    "Serviço RA":0,
-    "Serviço RB":0,
-    "Serviço RC":0,
-    "Serviço R0":0,
-
-    "Receção A":0,
-    "Receção B":0,
-    "Receção C":0,
-    "Receção Erro":0,
-
-    "Ataque Ponto":0,
-    "Ataque Continuação":0,
-    "Ataque Erro":0,
-
-    "Bloco Ponto":0,
-    "Bloco Continuação":0,
-    "Bloco Erro":0,
-
-    "Defesa +":0,
-    "Defesa -":0
-
-  };
-
+function addStat(pid,key,delta=1){
+ let p=state.players.find(x=>x.id===pid);if(!p)return;
+ let s=ensureStats(p);s[key]=(s[key]||0)+delta;
 }
+function addEvent(description, pid, ourDelta, oppDelta, statKey){
+ state.events.push({description,pid,ourDelta,oppDelta,statKey});
+ state.our+=ourDelta;state.opp+=oppDelta;
+ if(pid&&statKey)addStat(pid,statKey,1);
+ feedback(description);
+ save();
+}
+function feedback(t){document.getElementById('feedback').textContent=t}
 
-
-/* =========================================================
-   JOGADORES NO JOGO
-========================================================= */
+function service(kind){
+ let pid=state.server||state.selected;if(!pid){alert('Selecione quem serve.');return}
+ let label=kind==='R0'?'Serviço Ponto':'Serviço '+kind;
+ if(kind==='R0'){addEvent(label,pid,1,0,'servicePts');addStat(pid,'points',1);addStat(pid,'serviceTotal',1)}
+ else {addEvent(label,pid,0,0,kind==='RC'?'serviceRC':null);addStat(pid,'serviceTotal',1)}
+}
+function serviceError(){
+ let pid=state.server||state.selected;if(!pid){alert('Selecione quem serve.');return}
+ addEvent('Serviço Erro',pid,0,1,'serviceErr');addStat(pid,'serviceTotal',1);addStat(pid,'errors',1);
+}
+function reception(kind){
+ let pid=state.receiver||state.selected;if(!pid){alert('Selecione quem recebe.');return}
+ let key={A:'recA',B:'recB',C:'recC',R0:'recErr'}[kind];
+ addEvent('Receção '+kind,pid,0,kind==='R0'?1:0,key);
+ if(kind==='R0')addStat(pid,'errors',1);
+}
+function attack(kind){
+ let pid=state.selected;if(!pid){alert('Selecione o atacante.');return}
+ if(kind==='Ponto'){addEvent('Ataque Ponto',pid,1,0,'attackPts');addStat(pid,'points',1)}
+ else if(kind==='Erro'){addEvent('Ataque Erro',pid,0,1,'attackErr');addStat(pid,'errors',1)}
+ else addEvent('Ataque Continuação',pid,0,0,null);
+ addStat(pid,'attackTotal',1);
+}
+function opponentPointAttack(){addEvent('Ponto Ataque Adversário',state.selected,0,1,null)}
+function block(kind){
+ let pid=state.selected;if(!pid){alert('Selecione o atleta.');return}
+ if(kind==='Ponto'){addEvent('Bloco Ponto',pid,1,0,'blockPts');addStat(pid,'points',1);addStat(pid,'blockPts',1)}
+ else if(kind==='Erro'){addEvent('Bloco Erro',pid,0,1,null);addStat(pid,'errors',1)}
+ else addEvent('Bloco Continuação',pid,0,0,null);
+}
+function defense(kind){
+ let pid=state.selected;if(!pid){alert('Selecione o atleta.');return}
+ if(kind==='+')addEvent('Defesa +',pid,0,0,null);
+ else{addEvent('Defesa Erro',pid,0,1,null);addStat(pid,'errors',1)}
+}
+function special(label,side){addEvent(label,state.selected,side==='us'?1:0,side==='opp'?1:0,null)}
+function finishSet(){
+ if(state.our===0&&state.opp===0){alert('O set ainda não tem pontos.');return}
+ state.closedSets.push({set:state.setNo,our:state.our,opp:state.opp,events:[...state.events]});
+ state.setNo++;state.our=0;state.opp=0;state.events=[];
+ feedback('Set terminado. Começou o set '+state.setNo+'.');save();
+}
+function undo(){
+ let e=state.events.pop();if(!e){alert('Não há ação para desfazer neste set.');return}
+ state.our-=e.ourDelta;state.opp-=e.oppDelta;
+ if(e.pid&&e.statKey){
+   let p=state.players.find(x=>x.id===e.pid),s=p&&ensureStats(p);
+   if(s)s[e.statKey]=Math.max(0,(s[e.statKey]||0)-1);
+   if(e.statKey==='serviceErr'||e.statKey==='attackErr'||e.statKey==='recErr')s.errors=Math.max(0,s.errors-1);
+   if(e.statKey==='servicePts'||e.statKey==='attackPts'||e.statKey==='blockPts')s.points=Math.max(0,s.points-1);
+   if(e.statKey==='serviceTotal'){}
+ }
+ feedback('Ação desfeita: '+e.description);save();
+}
+function newGame(){
+ if(!confirm('Começar novo jogo? As estatísticas atuais serão apagadas.'))return;
+ state={team:document.getElementById('team').value||'Voleibol Oeiras',opponent:document.getElementById('opponent').value||'',date:document.getElementById('date').value||new Date().toISOString().slice(0,10),players:state.players.map(p=>({...p,stats:null})),selected:null,server:null,receiver:null,setNo:1,our:0,opp:0,closedSets:[],events:[]};
+ save();
+}
 
 function renderPlayers(){
-
-  const container =
-    document.getElementById("players");
-
-  container.innerHTML="";
-
-
-  game.players.forEach(player=>{
-
-    const div=document.createElement("div");
-
-    div.className="player";
-
-    if(String(player.number)===
-       String(game.selected)){
-
-      div.classList.add("selected");
-
-    }
-
-    if(player.libero){
-
-      div.classList.add("libero");
-
-    }
-
-
-    div.innerHTML=`
-
-      <div onclick="selectPlayer('${escapeJs(player.number)}')">
-
-        <strong>
-          #${escapeHtml(player.number)}
-        </strong>
-
-        ${escapeHtml(player.name)}
-
-        ${
-          player.libero
-          ? "<small>🟦 LÍBERO</small>"
-          : "<small>Atleta</small>"
-        }
-
-      </div>
-
-      <div class="playerActions">
-
-        <button
-          class="white"
-          onclick="editPlayer('${escapeJs(player.number)}')">
-          ✏️
-        </button>
-
-        <button
-          class="red"
-          onclick="deletePlayer('${escapeJs(player.number)}')">
-          🗑️
-        </button>
-
-      </div>
-    `;
-
-
-    container.appendChild(div);
-
-  });
-
+ let el=document.getElementById('players');
+ el.innerHTML=state.players.map(p=>`<div class="player ${state.selected===p.id?'selected ':''}${p.libero?'libero':''}" onclick="selectPlayer(${p.id})">
+ <div class="num">${esc(p.num)}</div><div class="name">${esc(p.name)}${p.libero?' • L':''}</div>
+ <div class="tools"><button onclick="event.stopPropagation();editPlayer(${p.id})">✏️</button><button class="danger" onclick="event.stopPropagation();deletePlayer(${p.id})">🗑️</button></div></div>`).join('');
+ let opts='<option value="">— selecionar —</option>'+state.players.map(p=>`<option value="${p.id}">${esc(p.num)} — ${esc(p.name)}${p.libero?' (L)':''}</option>`).join('');
+ document.getElementById('server').innerHTML=opts;document.getElementById('receiver').innerHTML=opts;
+ document.getElementById('server').value=state.server||'';document.getElementById('receiver').value=state.receiver||'';
 }
-
-
-function selectPlayer(number){
-
-  game.selected=number;
-
-  renderPlayers();
-
-  updateSelectedInfo();
-
+function renderTable(){
+ let rows=state.players.map(p=>{
+ let s=ensureStats(p),err=s.errors||0;
+ return `<tr><td>${esc(p.num)}</td><td class="left">${esc(p.name)}${p.libero?' (L)':''}</td><td>${s.points||0}</td><td>${(s.points||0)-err}</td><td>${s.serviceTotal||0}</td><td>${s.serviceErr||0}</td><td>${pct(s.serviceRC,s.serviceTotal)}</td><td>${s.servicePts||0}</td><td>${s.recA+s.recB+s.recC+s.recErr}</td><td>${s.recErr||0}</td><td>${pct((s.recA||0)+(s.recB||0),s.recA+s.recB+s.recC+s.recErr)}</td><td>${pct(s.recA,s.recA+s.recB+s.recC+s.recErr)}</td><td>${s.attackTotal||0}</td><td>${s.attackErr||0}</td><td>${s.attackPts||0}</td><td>${pct(s.attackPts,s.attackTotal)}</td><td>${s.blockPts||0}</td></tr>`
+ }).join('');
+ document.getElementById('liveTable').innerHTML=`<tr><th>N.º</th><th class="left">Nome atleta</th><th>Tot</th><th>W-L</th><th>Tot</th><th>Err</th><th>% Dif</th><th>Pts</th><th>Tot</th><th>Err</th><th>% pos</th><th>% perf</th><th>Tot</th><th>Err</th><th>Pts</th><th>Pts %</th><th>Blk</th></tr>${rows}`;
 }
-
-
-function updateSelectedInfo(){
-
-  const player =
-    game.players.find(
-      p=>String(p.number)===
-         String(game.selected)
-    );
-
-
-  const info =
-    document.getElementById("selectedInfo");
-
-
-  if(!player){
-
-    info.textContent=
-      "Selecione um atleta";
-
-    return;
-
-  }
-
-
-  info.innerHTML=
-    `Atleta selecionado:
-     <strong>
-       #${escapeHtml(player.number)}
-       ${escapeHtml(player.name)}
-     </strong>
-     ${player.libero ? " 🟦 LÍBERO":""}`;
-
-}
-
-
-/* =========================================================
-   EDITAR ATLETA
-========================================================= */
-
-function editPlayer(number){
-
-  const player =
-    game.players.find(
-      p=>String(p.number)===String(number)
-    );
-
-  if(!player) return;
-
-
-  const newNumber =
-    prompt(
-      "Número da camisola:",
-      player.number
-    );
-
-  if(newNumber===null) return;
-
-
-  const newName =
-    prompt(
-      "Nome da atleta:",
-      player.name
-    );
-
-  if(newName===null) return;
-
-
-  const libero =
-    confirm(
-      "É líbero?\n\nOK = Sim\nCancelar = Não"
-    );
-
-
-  player.number=
-    newNumber.trim() || player.number;
-
-  player.name=
-    newName.trim() || player.name;
-
-  player.libero=libero;
-
-
-  if(String(game.selected)===
-     String(number)){
-
-    game.selected=player.number;
-
-  }
-
-
-  if(String(game.server)===
-     String(number)){
-
-    game.server=player.number;
-
-  }
-
-
-  if(String(game.receiver)===
-     String(number)){
-
-    game.receiver=player.number;
-
-  }
-
-
-  save();
-
-  render();
-
-}
-
-
-/* =========================================================
-   APAGAR ATLETA
-========================================================= */
-
-function deletePlayer(number){
-
-  const player =
-    game.players.find(
-      p=>String(p.number)===String(number)
-    );
-
-  if(!player) return;
-
-
-  if(game.players.length===1){
-
-    alert(
-      "Tem de existir pelo menos um atleta."
-    );
-
-    return;
-
-  }
-
-
-  const ok =
-    confirm(
-      `Eliminar #${player.number} ${player.name}?`
-    );
-
-
-  if(!ok) return;
-
-
-  game.players =
-    game.players.filter(
-      p=>String(p.number)!==String(number)
-    );
-
-
-  if(String(game.selected)===
-     String(number)){
-
-    game.selected=
-      game.players[0].number;
-
-  }
-
-
-  if(String(game.server)===
-     String(number)){
-
-    game.server=null;
-
-  }
-
-
-  if(String(game.receiver)===
-     String(number)){
-
-    game.receiver=null;
-
-  }
-
-
-  save();
-
-  render();
-
-}
-
-
-/* =========================================================
-   SERVIÇO / RECEÇÃO
-========================================================= */
-
-function renderRoles(){
-
-  const server =
-    document.getElementById("serverSelect");
-
-  const receiver =
-    document.getElementById("receiverSelect");
-
-
-  server.innerHTML=
-    '<option value="">Selecionar...</option>';
-
-  receiver.innerHTML=
-    '<option value="">Selecionar...</option>';
-
-
-  game.players.forEach(p=>{
-
-    const text=
-      `#${p.number} ${p.name}`;
-
-    server.innerHTML +=
-      `<option value="${escapeHtml(p.number)}">
-        ${escapeHtml(text)}
-       </option>`;
-
-    receiver.innerHTML +=
-      `<option value="${escapeHtml(p.number)}">
-        ${escapeHtml(text)}
-       </option>`;
-
-  });
-
-
-  if(game.server!==null)
-    server.value=game.server;
-
-  if(game.receiver!==null)
-    receiver.value=game.receiver;
-
-}
-
-
-function changeServer(number){
-
-  game.server=
-    number || null;
-
-  if(number)
-    game.selected=number;
-
-  renderPlayers();
-  updateSelectedInfo();
-  save();
-
-}
-
-
-function changeReceiver(number){
-
-  game.receiver=
-    number || null;
-
-  if(number)
-    game.selected=number;
-
-  renderPlayers();
-  updateSelectedInfo();
-  save();
-
-}
-
-
-/* =========================================================
-   REGISTAR AÇÃO
-========================================================= */
-
-function registerAction(type,result){
-
-  let playerNumber=
-    game.selected;
-
-
-  if(type==="Serviço" &&
-     game.server){
-
-    playerNumber=
-      game.server;
-
-  }
-
-
-  if(type==="Receção" &&
-     game.receiver){
-
-    playerNumber=
-      game.receiver;
-
-  }
-
-
-  const player =
-    game.players.find(
-      p=>String(p.number)===
-         String(playerNumber)
-    );
-
-
-  if(!player){
-
-    alert("Selecione um atleta.");
-
-    return;
-
-  }
-
-
-  const statKey=
-    `${type} ${result}`;
-
-
-  if(player.stats[statKey]===undefined){
-
-    player.stats[statKey]=0;
-
-  }
-
-
-  player.stats[statKey]++;
-
-
-  let pointTeam=null;
-
-
-  if(type==="Serviço" &&
-     result==="R0"){
-
-    pointTeam="oeiras";
-
-  }
-
-
-  if(type==="Receção" &&
-     result==="Erro"){
-
-    pointTeam="adversario";
-
-  }
-
-
-  if(type==="Ataque" &&
-     result==="Ponto"){
-
-    pointTeam="oeiras";
-
-  }
-
-
-  if(type==="Ataque" &&
-     result==="Erro"){
-
-    pointTeam="adversario";
-
-  }
-
-
-  if(type==="Bloco" &&
-     result==="Ponto"){
-
-    pointTeam="oeiras";
-
-  }
-
-
-  if(type==="Bloco" &&
-     result==="Erro"){
-
-    pointTeam="adversario";
-
-  }
-
-
-  if(type==="Defesa" &&
-     result==="-"){
-
-    pointTeam="adversario";
-
-  }
-
-
-  addEvent(
-    player,
-    `${type}: ${result}`,
-    pointTeam
-  );
-
-
-  game.selected=
-    player.number;
-
-
-  render();
-
-}
-
-
-/* =========================================================
-   FALTAS / ERROS
-========================================================= */
-
-function registerSpecial(
-  description,
-  pointTeam
-){
-
-  const player =
-    game.players.find(
-      p=>String(p.number)===
-         String(game.selected)
-    );
-
-
-  addEvent(
-    player,
-    description,
-    pointTeam
-  );
-
-
-  render();
-
-}
-
-
-/* =========================================================
-   EVENTOS
-========================================================= */
-
-function addEvent(
-  player,
-  description,
-  pointTeam=null
-){
-
-  const oldScoreA=
-    game.scoreA;
-
-  const oldScoreB=
-    game.scoreB;
-
-
-  if(pointTeam==="oeiras"){
-
-    game.scoreA++;
-
-  }
-
-
-  if(pointTeam==="adversario"){
-
-    game.scoreB++;
-
-  }
-
-
-  const event={
-
-    set:game.set,
-
-    player:
-      player ? player.number : null,
-
-    playerName:
-      player
-      ? player.name
-      : "Equipa",
-
-    description:description,
-
-    pointTeam:pointTeam,
-
-    scoreA:game.scoreA,
-
-    scoreB:game.scoreB
-
-  };
-
-
-  game.events.push(event);
-
-
-  game.history.push({
-
-    type:"event",
-
-    event:event,
-
-    oldScoreA:oldScoreA,
-
-    oldScoreB:oldScoreB
-
-  });
-
-
-  let message=
-    `✓ ${event.playerName} — ${description}`;
-
-
-  if(pointTeam==="oeiras"){
-
-    message+=
-      ` → +1 ${game.team}`;
-
-  }
-
-
-  if(pointTeam==="adversario"){
-
-    message+=
-      ` → +1 ${game.opponent}`;
-
-  }
-
-
-  message+=
-    ` | ${game.scoreA}-${game.scoreB}`;
-
-
-  document
-    .getElementById("feedback")
-    .textContent=message;
-
-
-  save();
-
-}
-
-
-/* =========================================================
-   DESFAZER
-========================================================= */
-
-function undo(){
-
-  if(game.history.length===0){
-
-    document
-      .getElementById("feedback")
-      .textContent=
-        "Nada para desfazer.";
-
-    return;
-
-  }
-
-
-  const last=
-    game.history.pop();
-
-
-  if(last.type==="event"){
-
-    const event=
-      last.event;
-
-
-    const player=
-      game.players.find(
-        p=>String(p.number)===
-           String(event.player)
-      );
-
-
-    if(player){
-
-      const key=
-        event.description;
-
-      if(player.stats[key]!==undefined){
-
-        player.stats[key]--;
-
-      }
-
-    }
-
-
-    game.scoreA=
-      last.oldScoreA;
-
-    game.scoreB=
-      last.oldScoreB;
-
-
-    game.events.pop();
-
-
-    document
-      .getElementById("feedback")
-      .textContent=
-        `↩ Desfeito: ${event.playerName} — ${event.description}`;
-
-  }
-
-
-  save();
-
-  render();
-
-}
-
-
-/* =========================================================
-   FECHAR SET
-========================================================= */
-
-function finishSet(){
-
-  if(
-    game.scoreA===0 &&
-    game.scoreB===0
-  ){
-
-    alert(
-      "O set ainda não tem pontos."
-    );
-
-    return;
-
-  }
-
-
-  const result={
-
-    set:game.set,
-
-    team:game.scoreA,
-
-    opponent:game.scoreB
-
-  };
-
-
-  game.sets.push(result);
-
-
-  const finishedSet=
-    game.set;
-
-
-  game.set++;
-
-  game.scoreA=0;
-  game.scoreB=0;
-
-  game.events=[];
-  game.history=[];
-
-
-  document
-    .getElementById("feedback")
-    .textContent=
-      `Set ${finishedSet} terminado:
-       ${game.team} ${result.team}–${result.opponent} ${game.opponent}`;
-
-
-  save();
-
-  render();
-
-}
-
-
-/* =========================================================
-   TABELA DE ESTATÍSTICAS
-========================================================= */
-
-function renderStats(){
-
-  let html=`
-
-    <table class="statsTable">
-
-      <tr>
-        <th>Atleta</th>
-        <th>Serviço</th>
-        <th>Receção</th>
-        <th>Ataque</th>
-        <th>Bloco</th>
-        <th>Defesa</th>
-      </tr>
-
-  `;
-
-
-  game.players.forEach(p=>{
-
-    const s=p.stats;
-
-
-    const serv=
-      (s["Serviço RA"]||0)+
-      (s["Serviço RB"]||0)+
-      (s["Serviço RC"]||0)+
-      (s["Serviço R0"]||0);
-
-
-    const rec=
-      (s["Receção A"]||0)+
-      (s["Receção B"]||0)+
-      (s["Receção C"]||0)+
-      (s["Receção Erro"]||0);
-
-
-    const atq=
-      (s["Ataque Ponto"]||0)+
-      (s["Ataque Continuação"]||0)+
-      (s["Ataque Erro"]||0);
-
-
-    const bloco=
-      (s["Bloco Ponto"]||0)+
-      (s["Bloco Continuação"]||0)+
-      (s["Bloco Erro"]||0);
-
-
-    const def=
-      (s["Defesa +"]||0)+
-      (s["Defesa -"]||0);
-
-
-    html+=`
-
-      <tr
-        class="${p.libero ? "liberoRow":""}"
-      >
-
-        <td>
-          #${escapeHtml(p.number)}
-          ${escapeHtml(p.name)}
-          ${p.libero ? " 🟦":""}
-        </td>
-
-        <td>${serv}</td>
-        <td>${rec}</td>
-        <td>${atq}</td>
-        <td>${bloco}</td>
-        <td>${def}</td>
-
-      </tr>
-
-    `;
-
-  });
-
-
-  html+="</table>";
-
-
-  html+=`
-
-    <br>
-
-    <strong>Sets anteriores:</strong>
-
-  `;
-
-
-  if(game.sets.length===0){
-
-    html+=" Nenhum.";
-
-  }else{
-
-    html+="<ul>";
-
-    game.sets.forEach(s=>{
-
-      html+=`
-        <li>
-          Set ${s.set}:
-          ${game.team} ${s.team}–
-          ${s.opponent} ${game.opponent}
-        </li>
-      `;
-
-    });
-
-    html+="</ul>";
-
-  }
-
-
-  document
-    .getElementById("stats")
-    .innerHTML=html;
-
-}
-
-
-/* =========================================================
-   LOG
-========================================================= */
-
+function pct(a,b){return b?((100*a/b).toFixed(1)+'%'):'—'}
 function renderLog(){
-
-  const container=
-    document.getElementById("log");
-
-
-  if(game.events.length===0){
-
-    container.innerHTML=
-      "<div>Nenhuma ação registada neste set.</div>";
-
-    return;
-
-  }
-
-
-  container.innerHTML="";
-
-
-  [...game.events]
-    .reverse()
-    .forEach(event=>{
-
-      let text=
-        `#${event.player || ""}
-         ${event.playerName}
-         — ${event.description}`;
-
-
-      if(event.pointTeam==="oeiras"){
-
-        text+=
-          ` → +1 ${game.team}`;
-
-      }
-
-
-      if(event.pointTeam==="adversario"){
-
-        text+=
-          ` → +1 ${game.opponent}`;
-
-      }
-
-
-      text+=
-        ` | ${event.scoreA}-${event.scoreB}`;
-
-
-      const div=
-        document.createElement("div");
-
-
-      div.className="logItem";
-
-      div.textContent=text;
-
-
-      container.appendChild(div);
-
-    });
-
+ let html=state.events.slice().reverse().map(e=>`<div>${esc(e.description)}</div>`).join('');
+ document.getElementById('log').innerHTML=html||'<div class="muted">Sem ações neste set.</div>';
 }
-
-
-/* =========================================================
-   RENDER GERAL
-========================================================= */
-
-function render(){
-
-  document
-    .getElementById("teamDisplay")
-    .textContent=game.team;
-
-
-  document
-    .getElementById("opponentDisplay")
-    .textContent=game.opponent;
-
-
-  document
-    .getElementById("scoreA")
-    .textContent=game.scoreA;
-
-
-  document
-    .getElementById("scoreB")
-    .textContent=game.scoreB;
-
-
-  document
-    .getElementById("setNumber")
-    .textContent=game.set;
-
-
-  renderPlayers();
-
-  renderRoles();
-
-  updateSelectedInfo();
-
-  renderStats();
-
-  renderLog();
-
+function renderAll(){
+ document.getElementById('team').value=state.team;document.getElementById('opponent').value=state.opponent;document.getElementById('date').value=state.date;
+ document.getElementById('score').textContent=state.our+' — '+state.opp;
+ document.getElementById('sets').textContent='Set '+state.setNo+(state.closedSets.length?' • '+state.closedSets.map(x=>x.our+'-'+x.opp).join(' | '):'');
+ renderPlayers();renderTable();renderLog();
 }
+document.getElementById('team').addEventListener('change',e=>{state.team=e.target.value;save()});
+document.getElementById('opponent').addEventListener('change',e=>{state.opponent=e.target.value;save()});
+document.getElementById('date').addEventListener('change',e=>{state.date=e.target.value;save()});
 
-
-/* =========================================================
-   NOVO JOGO
-========================================================= */
-
-function newGame(){
-
-  if(
-    !confirm(
-      "Começar um novo jogo?\n\n" +
-      "Os atletas atuais serão mantidos."
-    )
-  ){
-
-    return;
-
-  }
-
-
-  game.scoreA=0;
-  game.scoreB=0;
-
-  game.set=1;
-
-  game.sets=[];
-
-  game.events=[];
-
-  game.history=[];
-
-  game.server=null;
-  game.receiver=null;
-
-
-  save();
-
-  render();
-
+function allSets(){return [...state.closedSets,...((state.our||state.opp)?[{set:state.setNo,our:state.our,opp:state.opp}]:[])];}
+function stats(){
+ return state.players.map(p=>({p,s:ensureStats(p)}));
 }
-
-
-/* =========================================================
-   EXPORTAR PDF
-========================================================= */
-
-function exportPDF(){
-
-  buildReport();
-
-  /*
-    Pequeno atraso para garantir que o relatório
-    fica completamente construído antes da impressão.
-  */
-
-  setTimeout(()=>{
-
-    window.print();
-
-  },300);
-
+function donutGradient(items){
+ let total=items.reduce((a,x)=>a+x.v,0),cur=0,colors=['#5B8FF9','#61DDAA','#65789B','#F6BD16','#7262FD','#78D3F8','#9661BC','#F6903D','#008685','#F08BB4'];
+ let parts=items.map((x,i)=>{let a=cur/total*360;cur+=x.v;let b=cur/total*360;return `${colors[i%colors.length]} ${a}deg ${b}deg`}).join(',');
+ return `conic-gradient(${parts})`;
 }
-
-
-/* =========================================================
-   CONSTRUIR RELATÓRIO
-========================================================= */
-
-function buildReport(){
-
-  document
-    .getElementById("reportTeam")
-    .textContent=game.team;
-
-
-  document
-    .getElementById("reportOpponent")
-    .textContent=game.opponent;
-
-
-  const date=
-    new Date();
-
-
-  document
-    .getElementById("reportDate")
-    .textContent=
-      date.toLocaleDateString(
-        "pt-PT"
-      );
-
-
-  /*
-    Resultado dos sets fechados + set atual,
-    caso ainda tenha pontos.
-  */
-
-  let setsForOeiras=0;
-  let setsForOpponent=0;
-
-
-  game.sets.forEach(s=>{
-
-    if(s.team>s.opponent)
-      setsForOeiras++;
-
-    if(s.opponent>s.team)
-      setsForOpponent++;
-
-  });
-
-
-  /*
-    Se o set atual tiver pontos, mostra-o
-    como set em curso.
-  */
-
-  const currentHasPoints=
-    game.scoreA>0 ||
-    game.scoreB>0;
-
-
-  let totalScoreA=0;
-  let totalScoreB=0;
-
-
-  game.sets.forEach(s=>{
-
-    totalScoreA+=s.team;
-    totalScoreB+=s.opponent;
-
-  });
-
-
-  if(currentHasPoints){
-
-    totalScoreA+=game.scoreA;
-    totalScoreB+=game.scoreB;
-
-  }
-
-
-  document
-    .getElementById("reportResult")
-    .textContent=
-      `${totalScoreA} – ${totalScoreB}`;
-
-
-  document
-    .getElementById("reportSets")
-    .textContent=
-      `${setsForOeiras} – ${setsForOpponent}`;
-
-
-  /* PARCIAIS */
-
-  let setsHtml=`
-
-    <table>
-
-      <tr>
-        <th>Set</th>
-        <th>${escapeHtml(game.team)}</th>
-        <th>${escapeHtml(game.opponent)}</th>
-      </tr>
-
-  `;
-
-
-  game.sets.forEach(s=>{
-
-    setsHtml+=`
-
-      <tr>
-
-        <td>Set ${s.set}</td>
-
-        <td>${s.team}</td>
-
-        <td>${s.opponent}</td>
-
-      </tr>
-
-    `;
-
-  });
-
-
-  if(currentHasPoints){
-
-    setsHtml+=`
-
-      <tr>
-
-        <td>
-          Set ${game.set}
-          (em curso)
-        </td>
-
-        <td>${game.scoreA}</td>
-
-        <td>${game.scoreB}</td>
-
-      </tr>
-
-    `;
-
-  }
-
-
-  setsHtml+="</table>";
-
-
-  document
-    .getElementById("reportSetsTable")
-    .innerHTML=setsHtml;
-
-
-  /* ESTATÍSTICA DOS ATLETAS */
-
-  let statsHtml=`
-
-    <table>
-
-      <tr>
-
-        <th>Atleta</th>
-
-        <th>Serviço</th>
-
-        <th>Receção</th>
-
-        <th>Ataque</th>
-
-        <th>Bloco</th>
-
-        <th>Defesa</th>
-
-      </tr>
-
-  `;
-
-
-  game.players.forEach(p=>{
-
-    const s=p.stats;
-
-
-    const serv=
-      (s["Serviço RA"]||0)+
-      (s["Serviço RB"]||0)+
-      (s["Serviço RC"]||0)+
-      (s["Serviço R0"]||0);
-
-
-    const rec=
-      (s["Receção A"]||0)+
-      (s["Receção B"]||0)+
-      (s["Receção C"]||0)+
-      (s["Receção Erro"]||0);
-
-
-    const atq=
-      (s["Ataque Ponto"]||0)+
-      (s["Ataque Continuação"]||0)+
-      (s["Ataque Erro"]||0);
-
-
-    const bloco=
-      (s["Bloco Ponto"]||0)+
-      (s["Bloco Continuação"]||0)+
-      (s["Bloco Erro"]||0);
-
-
-    const def=
-      (s["Defesa +"]||0)+
-      (s["Defesa -"]||0);
-
-
-    statsHtml+=`
-
-      <tr class="${p.libero ? "liberoRow":""}">
-
-        <td>
-          #${escapeHtml(p.number)}
-          ${escapeHtml(p.name)}
-          ${p.libero ? " — LÍBERO":""}
-        </td>
-
-        <td>${serv}</td>
-
-        <td>${rec}</td>
-
-        <td>${atq}</td>
-
-        <td>${bloco}</td>
-
-        <td>${def}</td>
-
-      </tr>
-
-    `;
-
-  });
-
-
-  statsHtml+="</table>";
-
-
-  document
-    .getElementById("reportStats")
-    .innerHTML=statsHtml;
-
-
-  /* PONTOS / ERROS */
-
-  const counters={
-
-    "R0 — ponto Oeiras":0,
-
-    "Receção erro — ponto adversário":0,
-
-    "Ataque ponto — Oeiras":0,
-
-    "Ataque erro — adversário":0,
-
-    "Bloco ponto — Oeiras":0,
-
-    "Bloco erro — adversário":0,
-
-    "Defesa erro — adversário":0,
-
-    "Falta Oeiras — adversário":0,
-
-    "Falta adversário — Oeiras":0,
-
-    "Falta no passe — adversário":0,
-
-    "Erro deles — Oeiras":0
-
-  };
-
-
-  game.events.forEach(event=>{
-
-    const d=event.description;
-
-
-    if(d==="Serviço: R0")
-      counters["R0 — ponto Oeiras"]++;
-
-
-    if(d==="Receção: Erro")
-      counters["Receção erro — ponto adversário"]++;
-
-
-    if(d==="Ataque: Ponto")
-      counters["Ataque ponto — Oeiras"]++;
-
-
-    if(d==="Ataque: Erro")
-      counters["Ataque erro — adversário"]++;
-
-
-    if(d==="Bloco: Ponto")
-      counters["Bloco ponto — Oeiras"]++;
-
-
-    if(d==="Bloco: Erro")
-      counters["Bloco erro — adversário"]++;
-
-
-    if(d==="Defesa: -")
-      counters["Defesa erro — adversário"]++;
-
-
-    if(d==="Falta Oeiras")
-      counters["Falta Oeiras — adversário"]++;
-
-
-    if(d==="Falta adversário")
-      counters["Falta adversário — Oeiras"]++;
-
-
-    if(d==="Falta no passe — erro")
-      counters["Falta no passe — adversário"]++;
-
-
-    if(d==="Erro deles")
-      counters["Erro deles — Oeiras"]++;
-
-  });
-
-
-  let pointsHtml=`
-
-    <table>
-
-      <tr>
-        <th>Situação</th>
-        <th>N.º</th>
-      </tr>
-
-  `;
-
-
-  Object.keys(counters).forEach(key=>{
-
-    if(counters[key]>0){
-
-      pointsHtml+=`
-
-        <tr>
-
-          <td>${escapeHtml(key)}</td>
-
-          <td>${counters[key]}</td>
-
-        </tr>
-
-      `;
-
-    }
-
-  });
-
-
-  pointsHtml+="</table>";
-
-
-  document
-    .getElementById("reportPoints")
-    .innerHTML=pointsHtml;
-
+function makeReport(){
+ let sets=allSets(), ss=stats();
+ let pointPlayers=ss.filter(x=>x.s.points>1).sort((a,b)=>b.s.points-a.s.points);
+ let donut=pointPlayers.length?`<div class="donutwrap"><div class="donut" style="background:${donutGradient(pointPlayers.map(x=>({v:x.s.points})))}"><span class="donutcenter">${esc(pointPlayers[0].p.num)} — ${esc(pointPlayers[0].p.name)}<br>${pointPlayers[0].s.points} pts</span></div><div class="legend">${pointPlayers.map((x,i)=>`<span><b>${esc(x.p.num)} — ${esc(x.p.name)}</b>: ${x.s.points} pts</span>`).join('')}</div></div>`:'<div class="muted">Nenhum atleta com mais de 1 ponto.</div>';
+ let mainRows=ss.map(({p,s})=>{
+  let rt=s.recA+s.recB+s.recC+s.recErr;
+  return `<tr><td>${esc(p.num)}</td><td class="left">${esc(p.name)}${p.libero?' (L)':''}</td><td>${s.points}</td><td>${s.points-s.errors}</td><td>${s.serviceTotal}</td><td>${s.serviceErr}</td><td>${pct(s.serviceRC,s.serviceTotal)}</td><td>${s.servicePts}</td><td>${rt}</td><td>${s.recErr}</td><td>${pct(s.recA+s.recB,rt)}</td><td>${pct(s.recA,rt)}</td><td>${s.attackTotal}</td><td>${s.attackErr}</td><td>${s.attackPts}</td><td>${pct(s.attackPts,s.attackTotal)}</td><td>${s.blockPts}</td></tr>`
+ }).join('');
+ let errorRows=sets.map(x=>`<tr><td>Set ${x.set}</td><td>${errorsOeiras(x.set)}</td><td>${errorsOpp(x.set)}</td></tr>`).join('');
+ let eo=sets.reduce((a,x)=>a+errorsOeiras(x.set),0), ea=sets.reduce((a,x)=>a+errorsOpp(x.set),0);
+ errorRows+=`<tr><th>Total jogo</th><th>${eo}</th><th>${ea}</th></tr>`;
+ let pointRows=sets.map(x=>`<tr><td>Set ${x.set}</td><td>${pointsBySet(x.set,'attack',1)}</td><td>${pointsBySet(x.set,'service',1)}</td><td>${pointsBySet(x.set,'block',1)}</td><td>${opponentAttackPoints(x.set)}</td><td>—</td><td>—</td></tr>`).join('');
+ let totals=['attack','service','block'].map(k=>pointsBySet(null,k,1)).join('</td><td>');
+ let totalsOpp=[opponentAttackPoints(null),'—','—'].join('</td><td>');
+ pointRows+=`<tr><th>Total jogo</th><th>${totals}</th><th>${totalsOpp}</th></tr>`;
+ let liberos=state.players.filter(p=>p.libero);
+ let libCharts=liberos.map(p=>{let s=ensureStats(p),max=Math.max(s.recA,s.recB,s.recC,s.recErr,1);return `<div class="liberochart"><b>${esc(p.num)} — ${esc(p.name)}</b><div class="bubbles">${bubble('A',s.recA,max)}${bubble('B',s.recB,max)}${bubble('C',s.recC,max)}${bubble('R0',s.recErr,max)}</div></div>`}).join('');
+ if(!libCharts)libCharts='<div class="muted">Não foi identificado nenhum líbero.</div>';
+ document.getElementById('report').innerHTML=`
+ <h1>${esc(state.team)} vs ${esc(state.opponent||'Adversário')}</h1>
+ <div class="meta"><span>Resultado final: <b>${sets.filter(x=>x.our>x.opp).length} — ${sets.filter(x=>x.opp>x.our).length} em sets</b></span><span>Data: ${esc(state.date)}</span></div>
+ <div><b>Parciais:</b> ${sets.map(x=>`Set ${x.set}: ${x.our}-${x.opp}`).join(' &nbsp; | &nbsp; ')||'—'}</div>
+ <h2>Estatística individual</h2>
+ <table><tr><th>N.º</th><th>Nome atleta</th><th>Tot</th><th>W-L</th><th>Tot</th><th>Err</th><th>% Dif</th><th>Pts</th><th>Tot</th><th>Err</th><th>% pos</th><th>% perf</th><th>Tot</th><th>Err</th><th>Pts</th><th>Pts %</th><th>Blk</th></tr>${mainRows}</table>
+ <div class="two"><div><h2>Erros por set</h2><table><tr><th>Set</th><th>Erros Oeiras</th><th>Erros Adversário</th></tr>${errorRows}</table></div>
+ <div><h2>Pontos por equipa e set</h2><table><tr><th>Set</th><th colspan="3">Oeiras</th><th colspan="3">Adversário</th></tr><tr><th></th><th>Ataque</th><th>Serviço</th><th>Bloco</th><th>Ataque</th><th>Serviço</th><th>Bloco</th></tr>${pointRows}</table></div></div>
+ <div class="charts"><div class="chartbox"><h2>Pontos por atleta (&gt;1)</h2>${donut}</div><div class="chartbox"><h2>Receção — líberos</h2><div class="bubblebox">${libCharts}</div><div class="legend">A = receção A &nbsp; B = receção B &nbsp; C = receção C &nbsp; R0 = erro</div></div></div>
+ <div class="foot"><span>Data: ${esc(state.date)}</span><span>Treinador: Inês Mendes</span></div>`;
 }
-
-
-/* =========================================================
-   SEGURANÇA DE TEXTO
-========================================================= */
-
-function escapeHtml(text){
-
-  return String(text)
-
-    .replace(/&/g,"&amp;")
-
-    .replace(/</g,"&lt;")
-
-    .replace(/>/g,"&gt;")
-
-    .replace(/"/g,"&quot;")
-
-    .replace(/'/g,"&#039;");
-
+function eventsForSet(setNo){
+ let x=state.closedSets.find(s=>s.set===setNo);
+ return x?x.events:(setNo===state.setNo?state.events:[]);
 }
-
-
-function escapeJs(text){
-
-  return String(text)
-    .replace(/\\/g,"\\\\")
-    .replace(/'/g,"\\'");
-
+function errorsOeiras(setNo){let ev=eventsForSet(setNo);return ev.filter(e=>e.oppDelta===1).filter(e=>e.description!=='Ponto Ataque Adversário').length}
+function errorsOpp(setNo){let ev=eventsForSet(setNo);return ev.filter(e=>e.ourDelta===1&&e.description==='Ponto Ataque Adversário').length}
+function pointsBySet(setNo,type,ours){
+ let ev=setNo===null?state.closedSets.flatMap(s=>s.events||[]).concat(state.events):eventsForSet(setNo);
+ let target=ours?{attack:'Ataque Ponto',service:'Serviço Ponto',block:'Bloco Ponto'}[type]:'';
+ if(ours)return ev.filter(e=>e.description===target).length;
+ return 0;
 }
-
-
-/* =========================================================
-   INÍCIO
-========================================================= */
-
-load();
-
+function opponentAttackPoints(setNo){
+ let ev=setNo===null?state.closedSets.flatMap(s=>s.events||[]).concat(state.events):eventsForSet(setNo);
+ return ev.filter(e=>e.description==='Ponto Ataque Adversário').length;
+}
+function bubble(label,n,max){
+ if(!n)return '';
+ let d=Math.round(28+58*(n/max));
+ return `<div class="bubble ${label}" style="width:${d}px;height:${d}px">${label}<br>${n}</div>`;
+}
+renderAll();
 </script>
-
 </body>
 </html>
