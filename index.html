@@ -181,6 +181,15 @@ let state=JSON.parse(localStorage.getItem(KEY)||'null')||{
  team:'Voleibol Oeiras',opponent:'',date:new Date().toISOString().slice(0,10),
  players:[],selected:null,server:null,receiver:null,setNo:1,our:0,opp:0,closedSets:[],events:[]
 };
+// Compatibilidade com versões anteriores: normaliza os atletas guardados.
+if(!Array.isArray(state.players)) state.players=[];
+state.players=state.players.map((p,i)=>({
+ id:p.id??p.playerId??(Date.now()+i+Math.random()),
+ num:String(p.num??p.number??p.numero??p.n??''),
+ name:String(p.name??p.nome??p.athleteName??''),
+ libero:Boolean(p.libero??p.isLibero??p.liber??false),
+ stats:p.stats||null
+})).filter(p=>p.num||p.name);
 
 function save(){localStorage.setItem(KEY,JSON.stringify(state));renderAll()}
 function player(){return state.players.find(p=>p.id===state.selected)}
@@ -207,8 +216,17 @@ function deletePlayer(pid){
  state.players=state.players.filter(x=>x.id!==pid);
  if(state.selected===pid)state.selected=null;if(state.server===pid)state.server=null;if(state.receiver===pid)state.receiver=null;save();
 }
-function selectPlayer(pid){state.selected=pid;save()}
-function selectFromSelect(which){state[which]=document.getElementById(which).value||null;if(state[which])state.selected=state[which];save()}
+function selectPlayer(pid){
+ let p=state.players.find(x=>String(x.id)===String(pid)); if(!p)return;
+ state.selected=p.id; feedback('Selecionada: '+p.num+' — '+p.name); save();
+}
+function selectFromSelect(which){
+ let value=document.getElementById(which).value||null;
+ let p=value?state.players.find(x=>String(x.id)===String(value)):null;
+ state[which]=p?p.id:null;
+ if(p){state.selected=p.id;feedback('Selecionada: '+p.num+' — '+p.name);}
+ save();
+}
 function selectedOr(id2){return state.players.find(p=>p.id===id2)||player()}
 
 function ensureStats(p){
@@ -291,9 +309,10 @@ function newGame(){
 
 function renderPlayers(){
  let el=document.getElementById('players');
- el.innerHTML=state.players.map(p=>`<div class="player ${state.selected===p.id?'selected ':''}${p.libero?'libero':''}" onclick="selectPlayer(${p.id})">
+ state.players.forEach((p,i)=>{if(p.id==null)p.id=Date.now()+i+Math.random()});
+ el.innerHTML=state.players.map(p=>`<div class="player ${String(state.selected)===String(p.id)?'selected ':''}${p.libero?'libero':''}" onclick="selectPlayer('${p.id}')">
  <div class="num">${esc(p.num)}</div><div class="name">${esc(p.name)}${p.libero?' • L':''}</div>
- <div class="tools"><button onclick="event.stopPropagation();editPlayer(${p.id})">✏️</button><button class="danger" onclick="event.stopPropagation();deletePlayer(${p.id})">🗑️</button></div></div>`).join('');
+ <div class="tools"><button onclick="event.stopPropagation();editPlayer('${p.id}')">✏️</button><button class="danger" onclick="event.stopPropagation();deletePlayer('${p.id}')">🗑️</button></div></div>`).join('');
  let opts='<option value="">— selecionar —</option>'+state.players.map(p=>`<option value="${p.id}">${esc(p.num)} — ${esc(p.name)}${p.libero?' (L)':''}</option>`).join('');
  document.getElementById('server').innerHTML=opts;document.getElementById('receiver').innerHTML=opts;
  document.getElementById('server').value=state.server||'';document.getElementById('receiver').value=state.receiver||'';
