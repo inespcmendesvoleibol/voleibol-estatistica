@@ -343,15 +343,23 @@ function allSets(){return [...state.closedSets,...((state.our||state.opp)?[{set:
 function stats(){
  return state.players.map(p=>({p,s:ensureStats(p)}));
 }
-function donutGradient(items){
- let total=items.reduce((a,x)=>a+x.v,0),cur=0,colors=['#5B8FF9','#61DDAA','#65789B','#F6BD16','#7262FD','#78D3F8','#9661BC','#F6903D','#008685','#F08BB4'];
- let parts=items.map((x,i)=>{let a=cur/total*360;cur+=x.v;let b=cur/total*360;return `${colors[i%colors.length]} ${a}deg ${b}deg`}).join(',');
- return `conic-gradient(${parts})`;
+function donutSvg(items){
+ let total=items.reduce((a,x)=>a+x.s.points,0);
+ if(!total)return '';
+ let cx=60,cy=60,r=48,circ=2*Math.PI*r,offset=0;
+ let colors=['#5B8FF9','#61DDAA','#65789B','#F6BD16','#7262FD','#78D3F8','#9661BC','#F6903D','#008685','#F08BB4'];
+ let circles=items.map((x,i)=>{
+   let len=circ*x.s.points/total;
+   let c=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${colors[i%colors.length]}" stroke-width="24" stroke-dasharray="${len} ${circ-len}" stroke-dashoffset="${-offset}" transform="rotate(-90 ${cx} ${cy})"/>`;
+   offset+=len; return c;
+ }).join('');
+ let top=items[0];
+ return `<svg viewBox="0 0 120 120" width="105" height="105" aria-label="Pontos por atleta">${circles}<circle cx="60" cy="60" r="34" fill="white"/><text x="60" y="55" text-anchor="middle" font-size="7" font-weight="700">${esc(top.p.num)} — ${esc(top.p.name)}</text><text x="60" y="66" text-anchor="middle" font-size="8" font-weight="800">${top.s.points} pts</text></svg>`;
 }
 function makeReport(){
  let sets=allSets(), ss=stats();
  let pointPlayers=ss.filter(x=>x.s.points>1).sort((a,b)=>b.s.points-a.s.points);
- let donut=pointPlayers.length?`<div class="donutwrap"><div class="donut" style="background:${donutGradient(pointPlayers.map(x=>({v:x.s.points})))}"><span class="donutcenter">${esc(pointPlayers[0].p.num)} — ${esc(pointPlayers[0].p.name)}<br>${pointPlayers[0].s.points} pts</span></div><div class="legend">${pointPlayers.map((x,i)=>`<span><b>${esc(x.p.num)} — ${esc(x.p.name)}</b>: ${x.s.points} pts</span>`).join('')}</div></div>`:'<div class="muted">Nenhum atleta com mais de 1 ponto.</div>';
+ let donut=pointPlayers.length?`<div class="donutwrap">${donutSvg(pointPlayers)}<div class="legend">${pointPlayers.map((x,i)=>`<span><b>${esc(x.p.num)} — ${esc(x.p.name)}</b>: ${x.s.points} pts</span>`).join('')}</div></div>`:'<div class="muted">Nenhum atleta com mais de 1 ponto.</div>';
  let mainRows=ss.map(({p,s})=>{
   let rt=s.recA+s.recB+s.recC+s.recErr;
   return `<tr><td>${esc(p.num)}</td><td class="left">${esc(p.name)}${p.libero?' (L)':''}</td><td>${s.points}</td><td>${s.points-s.errors}</td><td>${s.serviceTotal}</td><td>${s.serviceErr}</td><td>${pct(s.serviceRC,s.serviceTotal)}</td><td>${s.servicePts}</td><td>${rt}</td><td>${s.recErr}</td><td>${pct(s.recA+s.recB,rt)}</td><td>${pct(s.recA,rt)}</td><td>${s.attackTotal}</td><td>${s.attackErr}</td><td>${s.attackPts}</td><td>${pct(s.attackPts,s.attackTotal)}</td><td>${s.blockPts}</td></tr>`
@@ -371,9 +379,24 @@ function makeReport(){
  <div class="meta"><span>Resultado final: <b>${sets.filter(x=>x.our>x.opp).length} — ${sets.filter(x=>x.opp>x.our).length} em sets</b></span><span>Data: ${esc(state.date)}</span></div>
  <div><b>Parciais:</b> ${sets.map(x=>`Set ${x.set}: ${x.our}-${x.opp}`).join(' &nbsp; | &nbsp; ')||'—'}</div>
  <h2>Estatística individual</h2>
- <table><tr><th>N.º</th><th>Nome atleta</th><th>Tot</th><th>W-L</th><th>Tot</th><th>Err</th><th>% Dif</th><th>Pts</th><th>Tot</th><th>Err</th><th>% pos</th><th>% perf</th><th>Tot</th><th>Err</th><th>Pts</th><th>Pts %</th><th>Blk</th></tr>${mainRows}</table>
+ <table>
+ <tr>
+   <th rowspan="2">N.º</th><th rowspan="2">Nome atleta</th>
+   <th colspan="2">Ações totais</th>
+   <th colspan="4">Service</th>
+   <th colspan="4">Reception</th>
+   <th colspan="4">Atack</th>
+   <th rowspan="2">Block</th>
+ </tr>
+ <tr>
+   <th>Tot</th><th>W-L</th>
+   <th>Tot</th><th>Err</th><th>% Dif</th><th>Pts</th>
+   <th>Tot</th><th>Err</th><th>% pos</th><th>% perf</th>
+   <th>Tot</th><th>Err</th><th>Pts</th><th>Pts %</th>
+ </tr>${mainRows}</table>
  <div class="two"><div><h2>Erros por set</h2><table><tr><th>Set</th><th>Erros Oeiras</th><th>Erros Adversário</th></tr>${errorRows}</table></div>
  <div><h2>Pontos por equipa e set</h2><table><tr><th>Set</th><th colspan="3">Oeiras</th><th colspan="3">Adversário</th></tr><tr><th></th><th>Ataque</th><th>Serviço</th><th>Bloco</th><th>Ataque</th><th>Serviço</th><th>Bloco</th></tr>${pointRows}</table></div></div>
+ <div style="margin-top:6px"><b>🏆 Monster Block:</b> ${monsterBlock()}</div>
  <div class="charts"><div class="chartbox"><h2>Pontos por atleta (&gt;1)</h2>${donut}</div><div class="chartbox"><h2>Receção — líberos</h2><div class="bubblebox">${libCharts}</div><div class="legend">A = receção A &nbsp; B = receção B &nbsp; C = receção C &nbsp; R0 = erro</div></div></div>
  <div class="foot"><span>Data: ${esc(state.date)}</span><span>Treinador: Inês Mendes</span></div>`;
 }
@@ -382,7 +405,10 @@ function eventsForSet(setNo){
  return x?x.events:(setNo===state.setNo?state.events:[]);
 }
 function errorsOeiras(setNo){let ev=eventsForSet(setNo);return ev.filter(e=>e.oppDelta===1).filter(e=>e.description!=='Ponto Ataque Adversário').length}
-function errorsOpp(setNo){let ev=eventsForSet(setNo);return ev.filter(e=>e.ourDelta===1&&e.description==='Ponto Ataque Adversário').length}
+function errorsOpp(setNo){
+ let ev=setNo===null?state.closedSets.flatMap(s=>s.events||[]).concat(state.events):eventsForSet(setNo);
+ return ev.filter(e=>e.description==='Erro deles'||e.description==='Falta Adversário').length;
+}
 function pointsBySet(setNo,type,ours){
  let ev=setNo===null?state.closedSets.flatMap(s=>s.events||[]).concat(state.events):eventsForSet(setNo);
  let target=ours?{attack:'Ataque Ponto',service:'Serviço Ponto',block:'Bloco Ponto'}[type]:'';
@@ -392,6 +418,12 @@ function pointsBySet(setNo,type,ours){
 function opponentAttackPoints(setNo){
  let ev=setNo===null?state.closedSets.flatMap(s=>s.events||[]).concat(state.events):eventsForSet(setNo);
  return ev.filter(e=>e.description==='Ponto Ataque Adversário').length;
+}
+function monsterBlock(){
+ let ranked=stats().filter(x=>x.s.blockPts>0).sort((a,b)=>b.s.blockPts-a.s.blockPts);
+ if(!ranked.length)return '—';
+ let max=ranked[0].s.blockPts;
+ return ranked.filter(x=>x.s.blockPts===max).map(x=>`${esc(x.p.num)} — ${esc(x.p.name)} (${max})`).join(' / ');
 }
 function bubble(label,n,max){
  if(!n)return '';
